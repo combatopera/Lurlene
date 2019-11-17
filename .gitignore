@@ -1,14 +1,8 @@
 #gclean
-/actual/
 *.pyc
-pym2149/native/*.pyxbldc
-pym2149/native/*.c
-pym2149/native/*.so
-*_turbo/
-*.dsd
 /build/
 /dist/
-/pym2149.egg-info/
+/Lurlene.egg-info/
 /setup.cfg
 /setup.py
 /nosetests.xml
