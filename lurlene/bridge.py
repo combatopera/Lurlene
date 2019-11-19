@@ -44,11 +44,11 @@ class LiveCodingBridge:
     @innerclass
     class Session:
 
-        def __init__(self, chipproxies):
-            self.chipproxies = chipproxies
+        def __init__(self, chips):
+            self.chips = chips
 
         def _quiet(self):
-            for proxy in self.chipproxies:
+            for proxy in self.chips:
                 proxy.noiseflag = False
                 proxy.toneflag = False
                 proxy.envflag = False
@@ -56,7 +56,7 @@ class LiveCodingBridge:
 
         def _step(self, speed, section, frame):
             self._quiet()
-            for proxy, pattern in zip(self.chipproxies, section):
+            for proxy, pattern in zip(self.chips, section):
                 with catch(proxy, "Channel %s update failed:", proxy._letter):
                     pattern.apply(speed, frame, proxy)
 
@@ -70,8 +70,8 @@ class LiveCodingBridge:
             raise NoSuchSectionException(self.sectionname)
         return self.context._sections.startframe(i)
 
-    def frames(self, chipproxies):
-        session = self.Session(chipproxies)
+    def frames(self, chips):
+        session = self.Session(chips)
         frameindex = self._initialframe() + self.bias
         with threadlocals(context = self.context):
             while self.loop or frameindex < self.context._sections.totalframecount:
