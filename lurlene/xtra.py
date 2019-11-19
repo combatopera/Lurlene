@@ -24,20 +24,20 @@ class XTRA:
     envflag = V('30x,1')
     mute = False
 
-    def on(self, chip, frame):
+    def on(self, ym, frame):
         if self.mute:
             return
         envflag = self.envflag[frame]
         pitch = _topitch(major, 1, E4, self.degree[frame])
-        for chan in range(min(3, len(chip._chanproxies))):
-            chip[chan].toneflag = True
-            chip[chan].level = 15
-            chip[chan].envflag = envflag
-            chip[chan].tonepitch = pitch
-            chip[chan].toneperiod += chan * 2
+        for chan in range(min(3, len(ym._chanproxies))):
+            ym[chan].toneflag = True
+            ym[chan].level = 15
+            ym[chan].envflag = envflag
+            ym[chan].tonepitch = pitch
+            ym[chan].toneperiod += chan * 2
         if envflag and not self.envflag[frame - 1]:
-            chip.envshape = 0
-        chip.envperiod = 30 << 8
+            ym.envshape = 0
+        ym.envperiod = 30 << 8
 
     def off(self):
         type(self).mute = True
