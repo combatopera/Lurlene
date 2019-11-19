@@ -17,7 +17,7 @@
 
 from .context import Sections, Context
 from .iface import Config
-from .util import threadlocals, catch
+from .util import threadlocals, catch, outerzip
 from diapyr import types
 from diapyr.util import innerclass, singleton
 from functools import partial
@@ -26,6 +26,12 @@ import logging, bisect, difflib
 log = logging.getLogger(__name__)
 
 class NoSuchSectionException(Exception): pass
+
+class Channel:
+
+    def __init__(self, index, nametoproxy):
+        self.letter = chr(ord('A') + index)
+        self.nametoproxy = nametoproxy
 
 class LiveCodingBridge:
 
@@ -45,20 +51,22 @@ class LiveCodingBridge:
     class Session:
 
         def __init__(self, chips):
-            self.chips = chips
+            self.channels = [Channel(index, {name: proxy for name, proxy in zip(chips, proxies) if proxy is not None})
+                    for index, proxies in enumerate(outerzip(*chips.values()))]
 
         def _quiet(self):
-            for proxy in self.chips:
-                proxy.noiseflag = False
-                proxy.toneflag = False
-                proxy.envflag = False
-                proxy.level = 0
+            for channel in self.channels:
+                for proxy in channel.nametoproxy.values():
+                    proxy.noiseflag = False
+                    proxy.toneflag = False
+                    proxy.envflag = False
+                    proxy.level = 0
 
         def _step(self, speed, section, frame):
             self._quiet()
-            for proxy, pattern in zip(self.chips, section):
-                with catch(proxy, "Channel %s update failed:", proxy._letter):
-                    pattern.apply(speed, frame, proxy)
+            for channel, pattern in zip(self.channels, section):
+                with catch(channel, "Channel %s update failed:", channel.letter):
+                    pattern.apply(speed, frame, channel.nametoproxy)
 
     def _initialframe(self):
         if self.sectionname is None:
