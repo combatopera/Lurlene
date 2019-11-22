@@ -118,4 +118,5 @@ class LiveCodingBridge:
             for tag, i1, i2, j1, j2 in opcodes:
                 if tag in {'delete', 'replace'} and i1 <= oldsectionindex and oldsectionindex < i2:
                     return j1, 0
-        return baseframe + (0 if sectionindexandframe is None else (self.context._sections.startframe(sectionindexandframe[0]) + sectionindexandframe[1]))
+            return 0, 0
+        return baseframe + self.context._sections.startframe(sectionindexandframe[0]) + sectionindexandframe[1]
