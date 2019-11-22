@@ -70,13 +70,14 @@ class LiveCodingBridge:
 
     def _initialframe(self):
         if self.sectionname is None:
-            return 0
-        section = getattr(self.context, self.sectionname)
-        try:
-            i = self.context.sections.index(section)
-        except ValueError:
-            raise NoSuchSectionException(self.sectionname)
-        return self.context._sections.startframe(i)
+            sectionindex = 0
+        else:
+            section = getattr(self.context, self.sectionname)
+            try:
+                sectionindex = self.context.sections.index(section)
+            except ValueError:
+                raise NoSuchSectionException(self.sectionname)
+        return self.context._sections.startframe(sectionindex)
 
     def frames(self, chips):
         session = self.Session(chips)
