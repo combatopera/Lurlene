@@ -117,6 +117,6 @@ class LiveCodingBridge:
                     return j1 + self.context.sections[j1:j2].index(oldsection), sectionframe
             for tag, i1, i2, j1, j2 in opcodes:
                 if tag in {'delete', 'replace'} and i1 <= oldsectionindex and oldsectionindex < i2:
-                    return j1, 0
-            return 0, 0
+                    return j1, self.bias
+            return 0, self.bias # TODO: Test this case
         return baseframe + self.context._sections.startframe(sectionindexandframe[0]) + sectionindexandframe[1]
