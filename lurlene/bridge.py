@@ -97,7 +97,6 @@ class LiveCodingBridge:
                 if oldspeed != self.context.speed:
                     frameindex = (frameindex - self.bias) / oldspeed * self.context.speed + self.bias
                 if oldsections != self.context.sections:
-                    # FIXME: Where is the bias!
                     frameindex = self._adjustframeindex(Sections(self.context.speed, oldsections), frameindex)
 
     def _adjustframeindex(self, oldsections, frameindex):
