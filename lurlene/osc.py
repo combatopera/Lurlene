@@ -17,8 +17,8 @@
 
 from .context import Context
 from .iface import Config
-from bg import SimpleBackground
 from diapyr import types
+from splut.bg import SimpleBackground
 import logging, socket, timelyOSC
 
 log = logging.getLogger(__name__)
