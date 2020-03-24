@@ -20,12 +20,13 @@ from .iface import Config
 from .util import Lazy
 from .xtra import XTRA
 from diapyr import types
-import ast, bisect, logging, numpy as np, threading
+import ast, bisect, builtins, logging, numpy as np, threading
 
 log = logging.getLogger(__name__)
 
 class Transform(ast.NodeTransformer):
 
+    builtinnames = set(dir(builtins))
     lazyname = '_lazy'
     depth = 0
 
@@ -48,7 +49,10 @@ class Transform(ast.NodeTransformer):
     def visit_Name(self, node):
         if self.depth or not isinstance(node.ctx, ast.Load):
             return node
-        return ast.Call(ast.Name(self.lazyname, ast.Load()), [ast.Call(ast.Name('globals', ast.Load()), [], []), ast.Str(node.id)], [])
+        name = node.id
+        if name in self.builtinnames:
+            return node
+        return ast.Call(ast.Name(self.lazyname, ast.Load()), [ast.Call(ast.Name('globals', ast.Load()), [], []), ast.Str(name)], [])
 
 class Context:
 
