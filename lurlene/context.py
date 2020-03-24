@@ -17,11 +17,38 @@
 
 from . import E
 from .iface import Config
+from .util import Lazy
 from .xtra import XTRA
 from diapyr import types
-import logging, threading, numpy as np, bisect
+import ast, bisect, logging, numpy as np, threading
 
 log = logging.getLogger(__name__)
+
+class Transform(ast.NodeTransformer):
+
+    lazyname = '_lazy'
+    depth = 0
+
+    def _passthrough(self, node):
+        self.depth += 1
+        try:
+            return self.generic_visit(node)
+        finally:
+            self.depth -= 1
+
+    def visit_ClassDef(self, node):
+        return self._passthrough(node)
+
+    def visit_FunctionDef(self, node):
+        return self._passthrough(node)
+
+    def visit_ListComp(self, node):
+        return self._passthrough(node)
+
+    def visit_Name(self, node):
+        if self.depth or not isinstance(node.ctx, ast.Load):
+            return node
+        return ast.Call(ast.Name(self.lazyname, ast.Load()), [ast.Call(ast.Name('globals', ast.Load()), [], []), ast.Str(node.id)], [])
 
 class Context:
 
@@ -30,6 +57,7 @@ class Context:
     @types(Config)
     def __init__(self, config, sections = [(E(XTRA, '11/1'),)]):
         self._globals = self._slowglobals = dict(
+            {Transform.lazyname: Lazy},
             __name__ = 'lurlene.context',
             tuning = config.tuning,
             mode = 1,
@@ -43,6 +71,7 @@ class Context:
         self._fastlock = threading.Lock()
 
     def _update(self, text):
+        code = compile(ast.fix_missing_locations(Transform().visit(ast.parse(text))), '<string>', 'exec')
         addupdate = []
         delete = []
         with self._slowlock:
@@ -50,7 +79,7 @@ class Context:
                 self._globals = self._slowglobals.copy()
                 self._updates = self._slowupdates.copy()
             before = self._slowglobals.copy()
-            exec(text, self._slowglobals) # XXX: Impact of modifying mutable objects?
+            exec(code, self._slowglobals) # XXX: Impact of modifying mutable objects?
             for name, value in self._slowglobals.items():
                 if not (name in before and value is before[name]):
                     self._slowupdates[name] = value

@@ -65,3 +65,41 @@ def catch(obj, *logargs):
         if not obj._onfire: # TODO: Show error if it has changed.
             log.exception(*logargs)
             obj._onfire = True
+
+class Lazy:
+
+    def __init__(self, globalsdict, name):
+        self._resolve = lambda: globalsdict[name]
+
+    def __str__(self):
+        return str(self._resolve())
+
+    def __getattr__(self, name):
+        return getattr(self._resolve(), name)
+
+    def __call__(self, *args, **kwargs):
+        return self._resolve()(*args, **kwargs)
+
+    def __getitem__(self, key):
+        return self._resolve()[key]
+
+    def __iter__(self):
+        return iter(self._resolve())
+
+    def __add__(self, other):
+        return self._resolve() + other
+
+    def __sub__(self, other):
+        return self._resolve() - other
+
+    def __mul__(self, other):
+        return self._resolve() * other
+
+    def __lshift__(self, other):
+        return self._resolve() << other
+
+    def __and__(self, other):
+        return self._resolve() & other
+
+    def __or__(self, other):
+        return self._resolve() | other
