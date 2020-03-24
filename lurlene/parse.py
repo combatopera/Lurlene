@@ -166,6 +166,7 @@ class EParse(Parse):
 class Program:
 
     def __init__(self, cls, init):
+        # FIXME: If cls is Lazy these params will get out of date.
         def params(name):
             try:
                 unbound = getattr(cls, name)
