@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .parse import VParse, EParse, BadWordException
-import unittest
+from .parse import VParse, EParse, BadWordException, _flatten
+from .util import Lazy
+from unittest import TestCase
 
-class TestVParse(unittest.TestCase):
+class TestVParse(TestCase):
 
     @staticmethod
     def _perframes(sections):
@@ -71,7 +72,7 @@ class TestVParse(unittest.TestCase):
         self.assertEqual([4, 4, 0], [s.initial for s in sections.sections])
         self.assertEqual([None, -4, 4], self._perframes(sections))
 
-class TestEParse(unittest.TestCase):
+class TestEParse(TestCase):
 
     def test_works(self):
         sections = EParse(None, None)('1 2 .5', None)
@@ -105,3 +106,9 @@ class TestEParse(unittest.TestCase):
         self.assertEqual(7, sections.len)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in sections.sections])
         self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in sections.sections])
+
+class TestLazy(TestCase):
+
+    def test_flatten(self):
+        g = dict(a = 'x', b = 'y', c = 'z')
+        self.assertEqual(['x', 'y', 'z'], list(_flatten([[[Lazy(g, 'a')], Lazy(g, 'b')], Lazy(g, 'c')])))

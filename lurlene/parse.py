@@ -117,8 +117,8 @@ def vector(dstr = None):
 
 def _flatten(scriptforest):
     for textorseq in scriptforest:
-        if isinstance(textorseq, str):
-            yield textorseq
+        if hasattr(textorseq, 'encode'):
+            yield str(textorseq) # Laziness lost.
         else:
             yield from _flatten(textorseq)
 
