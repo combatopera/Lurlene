@@ -23,7 +23,7 @@ class TestContext(unittest.TestCase):
     tuning = None
 
     def setUp(self):
-        self.c = Context(self, ())
+        self.c = Context(self, (), False)
 
     def test_globals(self):
         self.c._update('''g = 5

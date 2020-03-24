@@ -59,7 +59,7 @@ class Context:
     deleted = object()
 
     @types(Config)
-    def __init__(self, config, sections = [(E(XTRA, '11/1'),)]):
+    def __init__(self, config, sections = [(E(XTRA, '11/1'),)], xform = True):
         self._globals = self._slowglobals = dict(
             {Transform.lazyname: Lazy},
             __name__ = 'lurlene.context',
@@ -73,9 +73,10 @@ class Context:
         self._cache = {}
         self._slowlock = threading.Lock()
         self._fastlock = threading.Lock()
+        self._xform = xform
 
     def _update(self, text):
-        code = compile(ast.fix_missing_locations(Transform().visit(ast.parse(text))), '<string>', 'exec')
+        code = compile(ast.fix_missing_locations(Transform().visit(ast.parse(text))), '<string>', 'exec') if self._xform else text
         addupdate = []
         delete = []
         with self._slowlock:
