@@ -107,8 +107,8 @@ class TestEParse(TestCase):
         self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in sections.sections])
         self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in sections.sections])
 
-class TestLazy(TestCase):
+class TestFlatten(TestCase):
 
-    def test_flatten(self):
+    def test_lazy(self):
         g = dict(a = 'x', b = 'y', c = 'z')
         self.assertEqual(['x', 'y', 'z'], list(_flatten([[[Lazy(g, 'a')], Lazy(g, 'b')], Lazy(g, 'c')])))
