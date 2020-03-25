@@ -17,32 +17,13 @@
 
 from . import E
 from .iface import Config
+from .transform import Transform
 from .util import Lazy
 from .xtra import XTRA
-from collections import defaultdict
 from diapyr import types
-import ast, bisect, logging, numpy as np, threading
+import bisect, logging, numpy as np, threading
 
 log = logging.getLogger(__name__)
-
-# FIXME: Do not transform names of class bases.
-# FIXME: Update globalnames on the fly.
-class Transform(ast.NodeTransformer):
-
-    lazyname = '_lazy'
-
-    def __init__(self, globalnames):
-        self.lazycounts = defaultdict(lambda: 0)
-        self.globalnames = globalnames
-
-    def visit_Name(self, node):
-        if not isinstance(node.ctx, ast.Load):
-            return node
-        name = node.id
-        if name not in self.globalnames:
-            return node
-        self.lazycounts[name] += 1
-        return ast.Call(ast.Name(self.lazyname, ast.Load()), [ast.Call(ast.Name('globals', ast.Load()), [], []), ast.Str(name)], [])
 
 class Context:
 
@@ -73,13 +54,7 @@ class Context:
                 self._globals = self._slowglobals.copy()
                 self._updates = self._slowupdates.copy()
             before = self._slowglobals.copy()
-            if self._xform:
-                transform = Transform(self._slowglobals)
-                code = compile(ast.fix_missing_locations(transform.visit(ast.parse(text))), '<string>', 'exec')
-                if transform.lazycounts:
-                    log.debug("Lazy: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in transform.lazycounts.items()))
-            else:
-                code = text
+            code = Transform(self._slowglobals).transform(text) if self._xform else text
             exec(code, self._slowglobals) # XXX: Impact of modifying mutable objects?
             for name, value in self._slowglobals.items():
                 if not (name in before and value is before[name]):
