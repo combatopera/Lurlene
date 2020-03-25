@@ -24,10 +24,9 @@ log = logging.getLogger(__name__)
 # FIXME: Update globalnames on the fly.
 class Transform(ast.NodeTransformer):
 
-    lazyname = '_lazy'
-
-    def __init__(self, globalnames):
+    def __init__(self, lazyname, globalnames):
         self.lazycounts = defaultdict(lambda: 0)
+        self.lazyname = lazyname
         self.globalnames = globalnames
 
     def transform(self, text):

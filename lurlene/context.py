@@ -27,12 +27,13 @@ log = logging.getLogger(__name__)
 
 class Context:
 
+    lazyname = '_lazy'
     deleted = object()
 
     @types(Config)
     def __init__(self, config, sections = [(E(XTRA, '11/1'),)], xform = True):
         self._globals = self._slowglobals = dict(
-            {Transform.lazyname: Lazy},
+            {self.lazyname: Lazy},
             __name__ = 'lurlene.context',
             tuning = config.tuning,
             mode = 1,
@@ -54,7 +55,7 @@ class Context:
                 self._globals = self._slowglobals.copy()
                 self._updates = self._slowupdates.copy()
             before = self._slowglobals.copy()
-            code = Transform(self._slowglobals).transform(text) if self._xform else text
+            code = Transform(self.lazyname, self._slowglobals).transform(text) if self._xform else text
             exec(code, self._slowglobals) # XXX: Impact of modifying mutable objects?
             for name, value in self._slowglobals.items():
                 if not (name in before and value is before[name]):
