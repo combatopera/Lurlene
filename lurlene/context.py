@@ -19,39 +19,27 @@ from . import E
 from .iface import Config
 from .util import Lazy
 from .xtra import XTRA
+from collections import defaultdict
 from diapyr import types
-import ast, bisect, builtins, logging, numpy as np, threading
+import ast, bisect, logging, numpy as np, threading
 
 log = logging.getLogger(__name__)
 
 class Transform(ast.NodeTransformer):
 
-    builtinnames = set(dir(builtins))
     lazyname = '_lazy'
-    depth = 0
 
-    def _passthrough(self, node):
-        self.depth += 1
-        try:
-            return self.generic_visit(node)
-        finally:
-            self.depth -= 1
-
-    def visit_ClassDef(self, node):
-        return self._passthrough(node)
-
-    def visit_FunctionDef(self, node):
-        return self._passthrough(node)
-
-    def visit_ListComp(self, node):
-        return self._passthrough(node)
+    def __init__(self, globalnames):
+        self.lazycounts = defaultdict(lambda: 0)
+        self.globalnames = globalnames
 
     def visit_Name(self, node):
-        if self.depth or not isinstance(node.ctx, ast.Load):
+        if not isinstance(node.ctx, ast.Load):
             return node
         name = node.id
-        if name in self.builtinnames:
+        if name not in self.globalnames:
             return node
+        self.lazycounts[name] += 1
         return ast.Call(ast.Name(self.lazyname, ast.Load()), [ast.Call(ast.Name('globals', ast.Load()), [], []), ast.Str(name)], [])
 
 class Context:
@@ -76,7 +64,6 @@ class Context:
         self._xform = xform
 
     def _update(self, text):
-        code = compile(ast.fix_missing_locations(Transform().visit(ast.parse(text))), '<string>', 'exec') if self._xform else text
         addupdate = []
         delete = []
         with self._slowlock:
@@ -84,6 +71,10 @@ class Context:
                 self._globals = self._slowglobals.copy()
                 self._updates = self._slowupdates.copy()
             before = self._slowglobals.copy()
+            transform = Transform(self._slowglobals)
+            code = compile(ast.fix_missing_locations(transform.visit(ast.parse(text))), '<string>', 'exec') if self._xform else text
+            if transform.lazycounts:
+                log.debug("Lazy names: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in transform.lazycounts.items()))
             exec(code, self._slowglobals) # XXX: Impact of modifying mutable objects?
             for name, value in self._slowglobals.items():
                 if not (name in before and value is before[name]):
