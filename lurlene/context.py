@@ -73,10 +73,13 @@ class Context:
                 self._globals = self._slowglobals.copy()
                 self._updates = self._slowupdates.copy()
             before = self._slowglobals.copy()
-            transform = Transform(self._slowglobals)
-            code = compile(ast.fix_missing_locations(transform.visit(ast.parse(text))), '<string>', 'exec') if self._xform else text
-            if transform.lazycounts:
-                log.debug("Lazy names: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in transform.lazycounts.items()))
+            if self._xform:
+                transform = Transform(self._slowglobals)
+                code = compile(ast.fix_missing_locations(transform.visit(ast.parse(text))), '<string>', 'exec')
+                if transform.lazycounts:
+                    log.debug("Lazy: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in transform.lazycounts.items()))
+            else:
+                code = text
             exec(code, self._slowglobals) # XXX: Impact of modifying mutable objects?
             for name, value in self._slowglobals.items():
                 if not (name in before and value is before[name]):
