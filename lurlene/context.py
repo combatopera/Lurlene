@@ -25,6 +25,8 @@ import ast, bisect, logging, numpy as np, threading
 
 log = logging.getLogger(__name__)
 
+# FIXME: Do not transform names of class bases.
+# FIXME: Update globalnames on the fly.
 class Transform(ast.NodeTransformer):
 
     lazyname = '_lazy'
