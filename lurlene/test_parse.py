@@ -110,5 +110,5 @@ class TestEParse(TestCase):
 class TestFlatten(TestCase):
 
     def test_lazy(self):
-        g = dict(a = 'x', b = 'y', c = 'z')
-        self.assertEqual(['x', 'y', 'z'], list(_flatten([[[Lazy(g, 'a')], Lazy(g, 'b')], Lazy(g, 'c')])))
+        g = dict(a = 'x', b = 'yy', c = 'z')
+        self.assertEqual('x yy z', _flatten([[[Lazy(g, 'a')], Lazy(g, 'b')], Lazy(g, 'c')]))

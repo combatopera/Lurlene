@@ -116,16 +116,18 @@ def vector(dstr = None):
     return np.array([0, 0 if dstr is None else rebase(float(dstr)), 0])
 
 def _flatten(scriptforest):
-    for textorseq in scriptforest:
-        if hasattr(textorseq, 'encode'):
-            yield str(textorseq) # Laziness lost.
-        else:
-            yield from _flatten(textorseq)
+    def g(scriptforest):
+        for textorseq in scriptforest:
+            if hasattr(textorseq, 'encode'):
+                yield textorseq
+            else:
+                yield from g(textorseq)
+    return ' '.join(map(str, g(scriptforest)))
 
 def concat(scriptcls, parser, scriptforest, kwargs):
     scripts = []
     successor = None
-    for segment in reversed(' '.join(_flatten(scriptforest)).split(',')):
+    for segment in reversed(_flatten(scriptforest).split(',')):
         successor = scriptcls(parser(segment, successor), kwargs)
         scripts.insert(0, successor)
     return scripts[0] if 1 == len(scripts) else Concat(*scripts)
