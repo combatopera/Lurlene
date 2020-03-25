@@ -55,8 +55,8 @@ class Context:
                 self._globals = self._slowglobals.copy()
                 self._updates = self._slowupdates.copy()
             before = self._slowglobals.copy()
-            code = Transform(self.lazyname, self._slowglobals).transform(text) if self._xform else text
-            exec(code, self._slowglobals) # XXX: Impact of modifying mutable objects?
+            # XXX: Impact of modifying mutable objects?
+            exec(Transform(self.lazyname, self._slowglobals).transform(text) if self._xform else text, self._slowglobals)
             for name, value in self._slowglobals.items():
                 if not (name in before and value is before[name]):
                     self._slowupdates[name] = value
