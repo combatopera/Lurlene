@@ -17,7 +17,7 @@
 
 from . import E
 from .iface import Config
-from .transform import Transform
+from .transform import Interpreter
 from .util import Lazy
 from .xtra import XTRA
 from diapyr import types
@@ -45,7 +45,8 @@ class Context:
         self._cache = {}
         self._slowlock = threading.Lock()
         self._fastlock = threading.Lock()
-        self._xform = xform
+        i = Interpreter(self.lazyname, self._slowglobals)
+        self._interpreter = i if xform else i.justexec
 
     def _update(self, text):
         addupdate = []
@@ -55,8 +56,7 @@ class Context:
                 self._globals = self._slowglobals.copy()
                 self._updates = self._slowupdates.copy()
             before = self._slowglobals.copy()
-            # XXX: Impact of modifying mutable objects?
-            exec(Transform(self.lazyname, self._slowglobals).transform(text) if self._xform else text, self._slowglobals)
+            self._interpreter(text) # XXX: Impact of modifying mutable objects?
             for name, value in self._slowglobals.items():
                 if not (name in before and value is before[name]):
                     self._slowupdates[name] = value

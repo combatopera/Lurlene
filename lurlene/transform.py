@@ -16,48 +16,42 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from collections import defaultdict
+from diapyr.util import innerclass
 import ast, logging
 
 log = logging.getLogger(__name__)
 
-# FIXME: Do not transform names of class bases.
-# FIXME: Update globalnames on the fly.
-class Transform(ast.NodeTransformer):
+class Interpreter:
 
-    def __init__(self, lazyname, globalnames):
+    # FIXME: Do not transform names of class bases.
+    @innerclass
+    class Transform(ast.NodeTransformer):
+
+        def __init__(self):
+            self.lazycounts = defaultdict(lambda: 0)
+
+        def visit_Name(self, node):
+            if not isinstance(node.ctx, ast.Load):
+                return node
+            name = node.id
+            if name not in self.globalsdict:
+                return node
+            self.lazycounts[name] += 1
+            return ast.Call(ast.Name(self.lazyname, ast.Load()), [ast.Call(ast.Name('globals', ast.Load()), [], []), ast.Str(name)], [])
+
+        def report(self):
+            if self.lazycounts:
+                log.debug("Lazy: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in self.lazycounts.items()))
+
+    def __init__(self, lazyname, globalsdict):
         self.lazyname = lazyname
-        self.globalnames = set(globalnames)
+        self.globalsdict = globalsdict
 
-    def _transform(self, text):
-        self.lazycounts = defaultdict(lambda: 0)
-        tree = ast.fix_missing_locations(self.visit(ast.parse(text)))
-        if self.lazycounts:
-            log.debug("Lazy: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in self.lazycounts.items()))
-        return tree
+    def __call__(self, text):
+        transform = self.Transform()
+        for statement in ast.parse(text).body:
+            self.justexec(ast.fix_missing_locations(ast.Module([transform.visit(statement)]))) # XXX: Are locations accurate?
+        transform.report()
 
-    def transform(self, text):
-        return compile(self._transform(text), '<string>', 'exec')
-
-    def visit_Module(self, node):
-        for statement in node.body:
-            if isinstance(statement, ast.Assign):
-                for target in statement.targets:
-                    if isinstance(target, ast.Name):
-                        self.globalnames.add(target.id)
-                    elif isinstance(target, ast.Tuple): # FIXME: This could fail, resulting in no new globals.
-                        for element in target.elts:
-                            if isinstance(element, ast.Name):
-                                self.globalnames.add(element.id)
-            elif isinstance(statement, ast.ClassDef):
-                self.globalnames.add(statement.name)
-            self.visit(statement) # Assume no replacement.
-        return node
-
-    def visit_Name(self, node):
-        if not isinstance(node.ctx, ast.Load):
-            return node
-        name = node.id
-        if name not in self.globalnames:
-            return node
-        self.lazycounts[name] += 1
-        return ast.Call(ast.Name(self.lazyname, ast.Load()), [ast.Call(ast.Name('globals', ast.Load()), [], []), ast.Str(name)], [])
+    def justexec(self, textorast):
+        exec(compile(textorast, '<text>', 'exec'), self.globalsdict)

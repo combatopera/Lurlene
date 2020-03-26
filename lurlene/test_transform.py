@@ -15,30 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .transform import Transform
+from .transform import Interpreter
 from unittest import TestCase
-import ast
 
 class TestTransform(TestCase):
 
     def test_newglobals(self):
-        g = dict(a = 'A')
-        t = Transform('L', g)
-        lines = t._transform('''x = a
+        g = dict(a = 'A', b = 'B', L = lambda _, name: f"!{name}")
+        exec('', g)
+        snapshot = g.copy()
+        Interpreter('L', g)('''x = a
 y = b
 z = y
 w = x
 class C: pass
 ww = C
-xx, yy = 100
-zz = yy''').body
-        self.assertEqual(dict(a = 'A'), g)
-        self.assertIsInstance(lines.pop(0).value, ast.Call)
-        self.assertIsInstance(lines.pop(0).value, ast.Name)
-        self.assertIsInstance(lines.pop(0).value, ast.Call)
-        self.assertIsInstance(lines.pop(0).value, ast.Call)
-        self.assertIsInstance(lines.pop(0), ast.ClassDef)
-        self.assertIsInstance(lines.pop(0).value, ast.Call)
-        self.assertIsInstance(lines.pop(0), ast.Assign)
-        self.assertIsInstance(lines.pop(0).value, ast.Call)
-        self.assertFalse(lines)
+xx, yy = 100, 200
+zz = yy''')
+        self.assertEqual(dict(snapshot,
+                x = '!a', y = '!b', z = '!y', w = '!x', C = g['C'], ww = '!C', xx = 100, yy = 200, zz = '!yy'), g)
