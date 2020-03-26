@@ -25,11 +25,11 @@ log = logging.getLogger(__name__)
 class Transform(ast.NodeTransformer):
 
     def __init__(self, lazyname, globalnames):
-        self.lazycounts = defaultdict(lambda: 0)
         self.lazyname = lazyname
         self.globalnames = globalnames
 
     def _transform(self, text):
+        self.lazycounts = defaultdict(lambda: 0)
         tree = ast.fix_missing_locations(self.visit(ast.parse(text)))
         if self.lazycounts:
             log.debug("Lazy: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in self.lazycounts.items()))
