@@ -23,12 +23,15 @@ log = logging.getLogger(__name__)
 
 class Interpreter:
 
-    # FIXME: Do not transform names of class bases.
     @innerclass
     class Transform(ast.NodeTransformer):
 
         def __init__(self):
             self.lazycounts = defaultdict(lambda: 0)
+
+        def visit_ClassDef(self, node):
+            node.body[:] = (self.visit(statement) for statement in node.body)
+            return node
 
         def visit_Name(self, node):
             if not isinstance(node.ctx, ast.Load):
