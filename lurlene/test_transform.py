@@ -28,6 +28,7 @@ class TestTransform(TestCase):
 y = b
 z = y
 w = x''').body
+        self.assertEqual(dict(a = 'A'), g)
         self.assertIsInstance(lines.pop(0).value, ast.Call)
         self.assertIsInstance(lines.pop(0).value, ast.Name)
         self.assertIsInstance(lines.pop(0).value, ast.Call)
