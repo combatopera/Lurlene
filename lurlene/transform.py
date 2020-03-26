@@ -26,7 +26,7 @@ class Transform(ast.NodeTransformer):
 
     def __init__(self, lazyname, globalnames):
         self.lazyname = lazyname
-        self.globalnames = globalnames
+        self.globalnames = set(globalnames)
 
     def _transform(self, text):
         self.lazycounts = defaultdict(lambda: 0)
@@ -37,6 +37,21 @@ class Transform(ast.NodeTransformer):
 
     def transform(self, text):
         return compile(self._transform(text), '<string>', 'exec')
+
+    def visit_Module(self, node):
+        for statement in node.body:
+            if isinstance(statement, ast.Assign):
+                for target in statement.targets:
+                    if isinstance(target, ast.Name):
+                        self.globalnames.add(target.id)
+                    elif isinstance(target, ast.Tuple): # FIXME: This could fail, resulting in no new globals.
+                        for element in target.elts:
+                            if isinstance(element, ast.Name):
+                                self.globalnames.add(element.id)
+            elif isinstance(statement, ast.ClassDef):
+                self.globalnames.add(statement.name)
+            self.visit(statement) # Assume no replacement.
+        return node
 
     def visit_Name(self, node):
         if not isinstance(node.ctx, ast.Load):
