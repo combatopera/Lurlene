@@ -29,11 +29,14 @@ class Transform(ast.NodeTransformer):
         self.lazyname = lazyname
         self.globalnames = globalnames
 
-    def transform(self, text):
-        code = compile(ast.fix_missing_locations(self.visit(ast.parse(text))), '<string>', 'exec')
+    def _transform(self, text):
+        tree = ast.fix_missing_locations(self.visit(ast.parse(text)))
         if self.lazycounts:
             log.debug("Lazy: %s", ', '.join(f"""{n}{f"*{c}" if 1 != c else ''}""" for n, c in self.lazycounts.items()))
-        return code
+        return tree
+
+    def transform(self, text):
+        return compile(self._transform(text), '<string>', 'exec')
 
     def visit_Name(self, node):
         if not isinstance(node.ctx, ast.Load):
