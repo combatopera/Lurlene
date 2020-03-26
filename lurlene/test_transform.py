@@ -27,10 +27,14 @@ class TestTransform(TestCase):
         lines = t._transform('''x = a
 y = b
 z = y
-w = x''').body
+w = x
+class C: pass
+ww = C''').body
         self.assertEqual(dict(a = 'A'), g)
         self.assertIsInstance(lines.pop(0).value, ast.Call)
         self.assertIsInstance(lines.pop(0).value, ast.Name)
         self.assertIsInstance(lines.pop(0).value, ast.Call)
+        self.assertIsInstance(lines.pop(0).value, ast.Call)
+        self.assertIsInstance(lines.pop(0).value, ast.ClassDef)
         self.assertIsInstance(lines.pop(0).value, ast.Call)
         self.assertFalse(lines)
