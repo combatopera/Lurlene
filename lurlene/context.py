@@ -42,7 +42,7 @@ class Context:
         )
         self._snapshot = self.fastglobals.copy()
         self.fastupdates = self.slowupdates = {}
-        self._cache = {}
+        self.cache = {}
         self.slowlock = threading.Lock()
         self.fastlock = threading.Lock()
         i = Interpreter(self.lazyname, self.slowglobals)
@@ -109,13 +109,13 @@ class Context:
         def fget(self):
             args = [self.get(p) for p in params]
             try:
-                cacheargs, value = self._cache[name]
+                cacheargs, value = self.cache[name]
                 if all(x is y for x, y in zip(cacheargs, args)):
                     return value
             except KeyError:
                 pass
             value = f(*[self] + args)
-            self._cache[name] = args, value
+            self.cache[name] = args, value
             return value
         return property(fget)
 
