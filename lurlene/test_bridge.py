@@ -37,68 +37,69 @@ class TestAdjustFrameIndex(unittest.TestCase):
             section = None
             chipchannels = None
         self.b = LiveCodingBridge(Config(), self)
+        self.g = {}
 
     def get(self, name):
-        return getattr(self, name)
+        return self.g[name]
 
     def adjust(self, *args):
         return self.b._adjustframeindex(Sections(self.speed, self.oldsections), *args)
 
     @property
     def _sections(self):
-        return Sections(self.speed, self.sections)
+        return Sections(self.speed, self.g['sections'])
 
     def test_shift(self):
         self.oldsections = self.A, self.C
-        self.sections = self.A, self.B, self.C
+        self.g['sections'] = self.A, self.B, self.C
         self.assertEqual(100+110+60, self.adjust(100+60))
         self.assertEqual(100+110+120+100+110+60, self.adjust(100+120+100+60))
         self.oldsections = self.B, self.C
-        self.sections = self.A, self.B, self.C
+        self.g['sections'] = self.A, self.B, self.C
         self.assertEqual(100+55, self.adjust(55))
         self.assertEqual(100+110+60, self.adjust(110+60))
         self.assertEqual(100+110+120+100+55, self.adjust(110+120+55))
         self.assertEqual(100+110+120+100+110+60, self.adjust(110+120+110+60))
         self.oldsections = self.A, self.B, self.C
-        self.sections = self.B, self.C
+        self.g['sections'] = self.B, self.C
         self.assertEqual(55, self.adjust(100+55))
         self.assertEqual(110+60, self.adjust(100+110+60))
         self.assertEqual(110+120+55, self.adjust(100+110+120+100+55))
         self.assertEqual(110+120+110+60, self.adjust(100+110+120+100+110+60))
         self.oldsections = self.A, self.B, self.C
-        self.sections = self.A, self.C
+        self.g['sections'] = self.A, self.C
         self.assertEqual(100+60, self.adjust(100+110+60))
         self.assertEqual(100+120+100+60, self.adjust(100+110+120+100+110+60))
 
     def test_swap(self):
         self.oldsections = self.A, self.B, self.C
-        self.sections = self.A, self.C, self.B
+        self.g['sections'] = self.A, self.C, self.B
         self.assertEqual(50, self.adjust(50))
         self.assertEqual(100+120+55, self.adjust(100+55))
         self.assertEqual(100+60, self.adjust(100+110+60))
 
     def test_insertearlier(self):
         self.oldsections = self.A, self.B, self.C
-        self.sections = self.C, self.A, self.B, self.C
+        self.g['sections'] = self.C, self.A, self.B, self.C
         self.assertEqual(120+50, self.adjust(50))
         self.assertEqual(120+100+55, self.adjust(100+55))
         self.assertEqual(120+100+110+60, self.adjust(100+110+60))
 
     def test_delete(self):
         self.oldsections = self.A, self.B, self.C
-        self.sections = self.A, self.C
+        self.g['sections'] = self.A, self.C
         self.assertEqual(50, self.adjust(50))
         self.assertEqual(100.5, self.adjust(100+55))
         self.assertEqual(100+60, self.adjust(100+110+60))
         self.oldsections = self.A, self.B, self.C
-        self.sections = self.C,
+        self.g['sections'] = self.C,
         self.assertEqual(.5, self.adjust(50))
         self.assertEqual(.5, self.adjust(100+55))
         self.assertEqual(60, self.adjust(100+110+60))
 
     def test_replace(self):
         self.oldsections = self.A, self.B, self.B
-        self.sections = self.A, self.C, self.C
+        self.g['sections'] = self.A, self.C, self.C
         self.assertEqual(50, self.adjust(50))
         self.assertEqual(100.5, self.adjust(100+55))
         self.assertEqual(100.5, self.adjust(100+110+55))
