@@ -32,7 +32,7 @@ class Context:
 
     @types(Config)
     def __init__(self, config, sections = [(E(XTRA, '11/1'),)], xform = True):
-        self._globals = self._slowglobals = dict(
+        self._globals = self.slowglobals = dict(
             {self.lazyname: Lazy},
             __name__ = 'lurlene.context',
             tuning = config.tuning,
@@ -41,11 +41,11 @@ class Context:
             sections = sections,
         )
         self._snapshot = self._globals.copy()
-        self._updates = self._slowupdates = {}
+        self._updates = self.slowupdates = {}
         self._cache = {}
         self._slowlock = threading.Lock()
         self._fastlock = threading.Lock()
-        i = Interpreter(self.lazyname, self._slowglobals)
+        i = Interpreter(self.lazyname, self.slowglobals)
         self._interpreter = i if xform else i.justexec
 
     def _update(self, text):
@@ -53,21 +53,21 @@ class Context:
         delete = []
         with self._slowlock:
             with self._fastlock:
-                self._globals = self._slowglobals.copy()
-                self._updates = self._slowupdates.copy()
-            before = self._slowglobals.copy()
+                self._globals = self.slowglobals.copy()
+                self._updates = self.slowupdates.copy()
+            before = self.slowglobals.copy()
             self._interpreter(text) # XXX: Impact of modifying mutable objects?
-            for name, value in self._slowglobals.items():
+            for name, value in self.slowglobals.items():
                 if not (name in before and value is before[name]):
-                    self._slowupdates[name] = value
+                    self.slowupdates[name] = value
                     addupdate.append(name)
             for name in before:
-                if name not in self._slowglobals:
-                    self._slowupdates[name] = self.deleted
+                if name not in self.slowglobals:
+                    self.slowupdates[name] = self.deleted
                     delete.append(name)
             with self._fastlock:
-                self._globals = self._slowglobals
-                self._updates = self._slowupdates
+                self._globals = self.slowglobals
+                self._updates = self.slowupdates
         if addupdate:
             log.info("Add/update: %s", ', '.join(addupdate))
         if delete:
