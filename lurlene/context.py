@@ -27,7 +27,7 @@ log = logging.getLogger(__name__)
 
 class Context:
 
-    lazyname = '_lazy'
+    lazyname = '_lazy' # XXX: More reliably avoid collision?
     deleted = object()
 
     @types(Config)
