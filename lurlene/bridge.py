@@ -94,7 +94,7 @@ class LiveCodingBridge:
                         frameindex += 1
                 frame()
                 yield
-                self.context._flip()
+                self.context.flip()
                 if oldspeed != self.context.get('speed'):
                     frameindex = (frameindex - self.bias) / oldspeed * self.context.get('speed') + self.bias
                 if oldsections != self.context.get('sections'):

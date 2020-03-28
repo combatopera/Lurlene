@@ -75,7 +75,7 @@ class Context:
         if not (addupdate or delete):
             log.info('No change.')
 
-    def _flip(self):
+    def flip(self):
         if self.slowlock.acquire(False):
             try:
                 with self.fastlock:
