@@ -38,6 +38,9 @@ class TestAdjustFrameIndex(unittest.TestCase):
             chipchannels = None
         self.b = LiveCodingBridge(Config(), self)
 
+    def get(self, name):
+        return getattr(self, name)
+
     def adjust(self, *args):
         return self.b._adjustframeindex(Sections(self.speed, self.oldsections), *args)
 
