@@ -32,7 +32,7 @@ class Context:
 
     @types(Config)
     def __init__(self, config, sections = [(E(XTRA, '11/1'),)], xform = True):
-        self._globals = self.slowglobals = dict(
+        self.fastglobals = self.slowglobals = dict(
             {self.lazyname: Lazy},
             __name__ = 'lurlene.context',
             tuning = config.tuning,
@@ -40,8 +40,8 @@ class Context:
             speed = 16, # XXX: Needed when sections is empty?
             sections = sections,
         )
-        self._snapshot = self._globals.copy()
-        self._updates = self.slowupdates = {}
+        self._snapshot = self.fastglobals.copy()
+        self.fastupdates = self.slowupdates = {}
         self._cache = {}
         self._slowlock = threading.Lock()
         self._fastlock = threading.Lock()
@@ -53,8 +53,8 @@ class Context:
         delete = []
         with self._slowlock:
             with self._fastlock:
-                self._globals = self.slowglobals.copy()
-                self._updates = self.slowupdates.copy()
+                self.fastglobals = self.slowglobals.copy()
+                self.fastupdates = self.slowupdates.copy()
             before = self.slowglobals.copy()
             self._interpreter(text) # XXX: Impact of modifying mutable objects?
             for name, value in self.slowglobals.items():
@@ -66,8 +66,8 @@ class Context:
                     self.slowupdates[name] = self.deleted
                     delete.append(name)
             with self._fastlock:
-                self._globals = self.slowglobals
-                self._updates = self.slowupdates
+                self.fastglobals = self.slowglobals
+                self.fastupdates = self.slowupdates
         if addupdate:
             log.info("Add/update: %s", ', '.join(addupdate))
         if delete:
@@ -79,8 +79,8 @@ class Context:
         if self._slowlock.acquire(False):
             try:
                 with self._fastlock:
-                    self._snapshot = self._globals.copy()
-                    self._updates.clear()
+                    self._snapshot = self.fastglobals.copy()
+                    self.fastupdates.clear()
             finally:
                 self._slowlock.release()
 
@@ -88,12 +88,12 @@ class Context:
 
     def get(self, name):
         with self._fastlock:
-            # If the _globals value (or deleted) is due to _update, return _snapshot value (or deleted):
+            # If the fastglobals value (or deleted) is due to _update, return _snapshot value (or deleted):
             try:
-                value = self._globals[name]
+                value = self.fastglobals[name]
             except KeyError:
                 value = self.deleted
-            if name in self._updates and value is self._updates[name]:
+            if name in self.fastupdates and value is self.fastupdates[name]:
                 try:
                     return self._snapshot[name]
                 except KeyError:
