@@ -40,7 +40,7 @@ class Context:
             speed = 16, # XXX: Needed when sections is empty?
             sections = sections,
         )
-        self._snapshot = self.fastglobals.copy()
+        self.snapshot = self.fastglobals.copy()
         self.fastupdates = self.slowupdates = {}
         self.cache = {}
         self.slowlock = threading.Lock()
@@ -79,7 +79,7 @@ class Context:
         if self.slowlock.acquire(False):
             try:
                 with self.fastlock:
-                    self._snapshot = self.fastglobals.copy()
+                    self.snapshot = self.fastglobals.copy()
                     self.fastupdates.clear()
             finally:
                 self.slowlock.release()
@@ -88,14 +88,14 @@ class Context:
 
     def get(self, name):
         with self.fastlock:
-            # If the fastglobals value (or deleted) is due to _update, return _snapshot value (or deleted):
+            # If the fastglobals value (or deleted) is due to _update, return snapshot value (or deleted):
             try:
                 value = self.fastglobals[name]
             except KeyError:
                 value = self.deleted
             if name in self.fastupdates and value is self.fastupdates[name]:
                 try:
-                    return self._snapshot[name]
+                    return self.snapshot[name]
                 except KeyError:
                     raise self.NoSuchGlobalException(name) # TODO: Test this case.
             if value is self.deleted:
