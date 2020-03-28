@@ -43,16 +43,16 @@ class Context:
         self._snapshot = self.fastglobals.copy()
         self.fastupdates = self.slowupdates = {}
         self._cache = {}
-        self._slowlock = threading.Lock()
-        self._fastlock = threading.Lock()
+        self.slowlock = threading.Lock()
+        self.fastlock = threading.Lock()
         i = Interpreter(self.lazyname, self.slowglobals)
         self._interpreter = i if xform else i.justexec
 
     def _update(self, text):
         addupdate = []
         delete = []
-        with self._slowlock:
-            with self._fastlock:
+        with self.slowlock:
+            with self.fastlock:
                 self.fastglobals = self.slowglobals.copy()
                 self.fastupdates = self.slowupdates.copy()
             before = self.slowglobals.copy()
@@ -65,7 +65,7 @@ class Context:
                 if name not in self.slowglobals:
                     self.slowupdates[name] = self.deleted
                     delete.append(name)
-            with self._fastlock:
+            with self.fastlock:
                 self.fastglobals = self.slowglobals
                 self.fastupdates = self.slowupdates
         if addupdate:
@@ -76,18 +76,18 @@ class Context:
             log.info('No change.')
 
     def _flip(self):
-        if self._slowlock.acquire(False):
+        if self.slowlock.acquire(False):
             try:
-                with self._fastlock:
+                with self.fastlock:
                     self._snapshot = self.fastglobals.copy()
                     self.fastupdates.clear()
             finally:
-                self._slowlock.release()
+                self.slowlock.release()
 
     class NoSuchGlobalException(Exception): pass
 
     def get(self, name):
-        with self._fastlock:
+        with self.fastlock:
             # If the fastglobals value (or deleted) is due to _update, return _snapshot value (or deleted):
             try:
                 value = self.fastglobals[name]
