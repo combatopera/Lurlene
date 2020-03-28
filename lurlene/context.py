@@ -46,7 +46,7 @@ class Context:
         self.slowlock = threading.Lock()
         self.fastlock = threading.Lock()
         i = Interpreter(self.lazyname, self.slowglobals)
-        self._interpreter = i if xform else i.justexec
+        self.interpreter = i if xform else i.justexec
 
     def _update(self, text):
         addupdate = []
@@ -56,7 +56,7 @@ class Context:
                 self.fastglobals = self.slowglobals.copy()
                 self.fastupdates = self.slowupdates.copy()
             before = self.slowglobals.copy()
-            self._interpreter(text) # XXX: Impact of modifying mutable objects?
+            self.interpreter(text) # XXX: Impact of modifying mutable objects?
             for name, value in self.slowglobals.items():
                 if not (name in before and value is before[name]):
                     self.slowupdates[name] = value
