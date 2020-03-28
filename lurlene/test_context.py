@@ -26,7 +26,7 @@ class TestContext(unittest.TestCase):
         self.c = Context(self, (), False)
 
     def test_globals(self):
-        self.c._update('''g = 5
+        self.c.update('''g = 5
 def bump():
     global g
     g += 1''')
@@ -34,18 +34,18 @@ def bump():
         self.assertEqual(5, self.c.get('g'))
         self.c.get('bump')()
         self.assertEqual(6, self.c.get('g'))
-        self.c._update('''foo = "bar"''')
+        self.c.update('''foo = "bar"''')
         self.c._flip()
         self.assertEqual(6, self.c.get('g'))
         self.c.get('bump')()
         self.assertEqual(7, self.c.get('g'))
 
     def test_flip(self):
-        self.c._update('''speed = 100''')
+        self.c.update('''speed = 100''')
         self.assertEqual(16, self.c.get('speed'))
         self.c._flip()
         self.assertEqual(100, self.c.get('speed'))
-        self.c._update('''del speed''')
+        self.c.update('''del speed''')
         self.assertEqual(100, self.c.get('speed'))
         self.c._flip()
         with self.assertRaises(Context.NoSuchGlobalException) as cm:
@@ -53,7 +53,7 @@ def bump():
         self.assertEqual(('speed',), cm.exception.args)
 
     def test_flip2(self):
-        self.c._update('''x = object()
+        self.c.update('''x = object()
 y = object()
 z = object()
 sections = [x, y]''')
@@ -61,7 +61,7 @@ sections = [x, y]''')
         self.c._flip()
         s = self.c.get('sections')
         self.assertEqual([self.c.get('x'), self.c.get('y')], s)
-        self.c._update('''sections = [y, z]''')
+        self.c.update('''sections = [y, z]''')
         self.assertIs(s, self.c.get('sections'))
         self.c._flip()
         self.assertEqual([self.c.get('y'), self.c.get('z')], self.c.get('sections'))

@@ -48,7 +48,7 @@ class Context:
         i = Interpreter(self.lazyname, self.slowglobals)
         self.interpreter = i if xform else i.justexec
 
-    def _update(self, text):
+    def update(self, text):
         addupdate = []
         delete = []
         with self.slowlock:
@@ -88,7 +88,7 @@ class Context:
 
     def get(self, name):
         with self.fastlock:
-            # If the fastglobals value (or deleted) is due to _update, return snapshot value (or deleted):
+            # If the fastglobals value (or deleted) is due to update, return snapshot value (or deleted):
             try:
                 value = self.fastglobals[name]
             except KeyError:

@@ -93,7 +93,7 @@ class LCHandler(Handler):
     def __call__(self, timetags, message, reply):
         try:
             text, = message.args
-            self.context._update(text)
+            self.context.update(text)
         except Exception:
             log.exception('Update failed:')
 
