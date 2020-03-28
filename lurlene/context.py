@@ -120,7 +120,7 @@ class Context:
         return property(fget)
 
     @_cachedproperty
-    def _sections(self, speed, sections):
+    def sections(self, speed, sections):
         return Sections(speed, sections)
 
 class Sections:

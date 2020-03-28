@@ -78,19 +78,19 @@ class LiveCodingBridge:
                 sectionindex = self.context.get('sections').index(section)
             except ValueError:
                 raise NoSuchSectionException(self.sectionname)
-        return self.context._sections.startframe(sectionindex)
+        return self.context.sections.startframe(sectionindex)
 
     def frames(self, chips):
         session = self.Session(chips)
         frameindex = self._initialframe() + self.bias
         with threadlocals(context = self.context):
-            while self.loop or frameindex < self.context._sections.totalframecount:
+            while self.loop or frameindex < self.context.sections.totalframecount:
                 oldspeed = self.context.get('speed')
                 oldsections = self.context.get('sections')
                 frame = session._quiet
-                if self.context._sections.totalframecount: # Otherwise freeze until there is something to play.
+                if self.context.sections.totalframecount: # Otherwise freeze until there is something to play.
                     with catch(session, 'Failed to prepare a frame:'):
-                        frame = partial(session._step, self.context.get('speed'), *self.context._sections.sectionandframe(frameindex))
+                        frame = partial(session._step, self.context.get('speed'), *self.context.sections.sectionandframe(frameindex))
                         frameindex += 1
                 frame()
                 yield
@@ -101,7 +101,7 @@ class LiveCodingBridge:
                     frameindex = self._adjustframeindex(Sections(self.context.get('speed'), oldsections), frameindex)
 
     def _adjustframeindex(self, oldsections, frameindex):
-        baseframe = (frameindex // oldsections.totalframecount) * self.context._sections.totalframecount
+        baseframe = (frameindex // oldsections.totalframecount) * self.context.sections.totalframecount
         localframe = frameindex % oldsections.totalframecount
         oldsectionindex = bisect.bisect(oldsections.sectionends, localframe)
         sectionframe = localframe - oldsections.startframe(oldsectionindex)
@@ -119,4 +119,4 @@ class LiveCodingBridge:
                 if tag in {'delete', 'replace'} and i1 <= oldsectionindex and oldsectionindex < i2:
                     return j1, self.bias
             return 0, self.bias # TODO: Test this case
-        return baseframe + self.context._sections.startframe(sectionindexandframe[0]) + sectionindexandframe[1]
+        return baseframe + self.context.sections.startframe(sectionindexandframe[0]) + sectionindexandframe[1]

@@ -46,7 +46,7 @@ class TestAdjustFrameIndex(unittest.TestCase):
         return self.b._adjustframeindex(Sections(self.speed, self.oldsections), *args)
 
     @property
-    def _sections(self):
+    def sections(self):
         return Sections(self.speed, self.g['sections'])
 
     def test_shift(self):
