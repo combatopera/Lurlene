@@ -39,7 +39,7 @@ wholetone = V('0 2 4 6 8 10', step = 12, continuous = True)
 def topitch(degree):
     from .util import local
     c = local.context
-    return _topitch(c.scale, c.mode, c.tonic, degree)
+    return _topitch(c.get('scale'), c.get('mode'), c.get('tonic'), degree)
 
 def _topitch(scale, mode, tonic, degree):
     from .parse import rebase

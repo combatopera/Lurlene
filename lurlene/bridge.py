@@ -45,7 +45,7 @@ class LiveCodingBridge:
 
     @property
     def pianorollheight(self):
-        return self.context.speed
+        return self.context.get('speed')
 
     @innerclass
     class Session:
@@ -75,7 +75,7 @@ class LiveCodingBridge:
         else:
             section = getattr(self.context, self.sectionname)
             try:
-                sectionindex = self.context.sections.index(section)
+                sectionindex = self.context.get('sections').index(section)
             except ValueError:
                 raise NoSuchSectionException(self.sectionname)
         return self.context._sections.startframe(sectionindex)
@@ -85,27 +85,27 @@ class LiveCodingBridge:
         frameindex = self._initialframe() + self.bias
         with threadlocals(context = self.context):
             while self.loop or frameindex < self.context._sections.totalframecount:
-                oldspeed = self.context.speed
-                oldsections = self.context.sections
+                oldspeed = self.context.get('speed')
+                oldsections = self.context.get('sections')
                 frame = session._quiet
                 if self.context._sections.totalframecount: # Otherwise freeze until there is something to play.
                     with catch(session, 'Failed to prepare a frame:'):
-                        frame = partial(session._step, self.context.speed, *self.context._sections.sectionandframe(frameindex))
+                        frame = partial(session._step, self.context.get('speed'), *self.context._sections.sectionandframe(frameindex))
                         frameindex += 1
                 frame()
                 yield
                 self.context._flip()
-                if oldspeed != self.context.speed:
-                    frameindex = (frameindex - self.bias) / oldspeed * self.context.speed + self.bias
-                if oldsections != self.context.sections:
-                    frameindex = self._adjustframeindex(Sections(self.context.speed, oldsections), frameindex)
+                if oldspeed != self.context.get('speed'):
+                    frameindex = (frameindex - self.bias) / oldspeed * self.context.get('speed') + self.bias
+                if oldsections != self.context.get('sections'):
+                    frameindex = self._adjustframeindex(Sections(self.context.get('speed'), oldsections), frameindex)
 
     def _adjustframeindex(self, oldsections, frameindex):
         baseframe = (frameindex // oldsections.totalframecount) * self.context._sections.totalframecount
         localframe = frameindex % oldsections.totalframecount
         oldsectionindex = bisect.bisect(oldsections.sectionends, localframe)
         sectionframe = localframe - oldsections.startframe(oldsectionindex)
-        opcodes = difflib.SequenceMatcher(a = oldsections.sections, b = self.context.sections).get_opcodes()
+        opcodes = difflib.SequenceMatcher(a = oldsections.sections, b = self.context.get('sections')).get_opcodes()
         @singleton
         def sectionindexandframe():
             for tag, i1, i2, j1, j2 in opcodes:
@@ -113,8 +113,8 @@ class LiveCodingBridge:
                     return j1 + oldsectionindex - i1, sectionframe
             oldsection = oldsections.sections[oldsectionindex]
             for tag, i1, i2, j1, j2 in opcodes:
-                if 'insert' == tag and oldsection in self.context.sections[j1:j2]:
-                    return j1 + self.context.sections[j1:j2].index(oldsection), sectionframe
+                if 'insert' == tag and oldsection in self.context.get('sections')[j1:j2]:
+                    return j1 + self.context.get('sections')[j1:j2].index(oldsection), sectionframe
             for tag, i1, i2, j1, j2 in opcodes:
                 if tag in {'delete', 'replace'} and i1 <= oldsectionindex and oldsectionindex < i2:
                     return j1, self.bias

@@ -84,7 +84,9 @@ class Context:
             finally:
                 self._slowlock.release()
 
-    def __getattr__(self, name):
+    class NoSuchGlobalException(Exception): pass
+
+    def get(self, name):
         with self._fastlock:
             # If the _globals value (or deleted) is due to _update, return _snapshot value (or deleted):
             try:
@@ -95,9 +97,9 @@ class Context:
                 try:
                     return self._snapshot[name]
                 except KeyError:
-                    raise AttributeError(name)
+                    raise self.NoSuchGlobalException(name) # TODO: Test this case.
             if value is self.deleted:
-                raise AttributeError(name)
+                raise self.NoSuchGlobalException(name)
             return value
 
     def _cachedproperty(f):
@@ -105,7 +107,7 @@ class Context:
         code = f.__code__
         params = code.co_varnames[1:code.co_argcount]
         def fget(self):
-            args = [getattr(self, p) for p in params]
+            args = [self.get(p) for p in params]
             try:
                 cacheargs, value = self._cache[name]
                 if all(x is y for x, y in zip(cacheargs, args)):

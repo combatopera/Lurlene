@@ -31,25 +31,25 @@ def bump():
     global g
     g += 1''')
         self.c._flip()
-        self.assertEqual(5, self.c.g)
-        self.c.bump()
-        self.assertEqual(6, self.c.g)
+        self.assertEqual(5, self.c.get('g'))
+        self.c.get('bump')()
+        self.assertEqual(6, self.c.get('g'))
         self.c._update('''foo = "bar"''')
         self.c._flip()
-        self.assertEqual(6, self.c.g)
-        self.c.bump()
-        self.assertEqual(7, self.c.g)
+        self.assertEqual(6, self.c.get('g'))
+        self.c.get('bump')()
+        self.assertEqual(7, self.c.get('g'))
 
     def test_flip(self):
         self.c._update('''speed = 100''')
-        self.assertEqual(16, self.c.speed)
+        self.assertEqual(16, self.c.get('speed'))
         self.c._flip()
-        self.assertEqual(100, self.c.speed)
+        self.assertEqual(100, self.c.get('speed'))
         self.c._update('''del speed''')
-        self.assertEqual(100, self.c.speed)
+        self.assertEqual(100, self.c.get('speed'))
         self.c._flip()
-        with self.assertRaises(AttributeError) as cm:
-            self.c.speed
+        with self.assertRaises(Context.NoSuchGlobalException) as cm:
+            self.c.get('speed')
         self.assertEqual(('speed',), cm.exception.args)
 
     def test_flip2(self):
@@ -57,11 +57,11 @@ def bump():
 y = object()
 z = object()
 sections = [x, y]''')
-        self.assertEqual((), self.c.sections)
+        self.assertEqual((), self.c.get('sections'))
         self.c._flip()
-        s = self.c.sections
-        self.assertEqual([self.c.x, self.c.y], s)
+        s = self.c.get('sections')
+        self.assertEqual([self.c.get('x'), self.c.get('y')], s)
         self.c._update('''sections = [y, z]''')
-        self.assertIs(s, self.c.sections)
+        self.assertIs(s, self.c.get('sections'))
         self.c._flip()
-        self.assertEqual([self.c.y, self.c.z], self.c.sections)
+        self.assertEqual([self.c.get('y'), self.c.get('z')], self.c.get('sections'))
