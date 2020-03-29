@@ -87,12 +87,10 @@ class Context:
     class NoSuchGlobalException(Exception): pass
 
     def get(self, name):
+        'Include changes made via global keyword.'
         with self.fastlock:
             # If the fastglobals value (or deleted) is due to update, return snapshot value (or deleted):
-            try:
-                value = self.fastglobals[name]
-            except KeyError:
-                value = self.deleted
+            value = self.fastglobals.get(name, self.deleted)
             if name in self.fastupdates and value is self.fastupdates[name]:
                 try:
                     return self.snapshot[name]
