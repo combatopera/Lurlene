@@ -109,6 +109,7 @@ class Operators:
         return self.mulcls(self, that)
 
     def __and__(self, that):
+        # FIXME: Suspect loss of laziness of self is causing namespace-related kwarg-passing problems.
         return Merge(self, that)
 
     def __or__(self, that):
