@@ -21,9 +21,10 @@ import unittest
 class TestContext(unittest.TestCase):
 
     tuning = None
+    Lurlene = dict(lazy = False)
 
     def setUp(self):
-        self.c = Context(self, (), False)
+        self.c = Context(self, ())
 
     def test_globals(self):
         self.c.update('''g = 5

@@ -31,7 +31,7 @@ class Context:
     deleted = object()
 
     @types(Config)
-    def __init__(self, config, sections = [(E(XTRA, '11/1'),)], xform = True):
+    def __init__(self, config, sections = [(E(XTRA, '11/1'),)]):
         self.fastglobals = self.slowglobals = dict(
             {self.lazyname: Lazy},
             __name__ = 'lurlene.context',
@@ -46,7 +46,7 @@ class Context:
         self.slowlock = threading.Lock()
         self.fastlock = threading.Lock()
         i = Interpreter(self.lazyname, self.slowglobals)
-        self.interpreter = i if xform else i.justexec
+        self.interpreter = i if config.Lurlene['lazy'] else i.justexec
 
     def update(self, text):
         addupdate = []
