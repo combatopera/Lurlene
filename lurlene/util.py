@@ -66,7 +66,7 @@ def catch(obj, *logargs):
             log.exception(*logargs)
             obj._onfire = True
 
-class Lazy:
+class Lazy: # XXX: Is this really the most maintainable way?
 
     def __init__(self, globalsdict, name):
         self._resolve = lambda: globalsdict[name]
