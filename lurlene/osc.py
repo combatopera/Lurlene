@@ -73,9 +73,9 @@ class OSCListen(SimpleBackground):
         self.handlers = {a: h for h in handlers for a in h.addresses}
 
     def start(self):
-        config = self.config['OSC',]
+        config = self.config.OSC
         super().start(self.bg, OSCClient(
-                *(config.resolved(name).unravel() for name in ['host', 'port', 'bufsize']),
+                *(getattr(config, name) for name in ['host', 'port', 'bufsize']),
                 self.handlers))
 
     def bg(self, client):

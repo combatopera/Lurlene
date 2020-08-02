@@ -46,7 +46,7 @@ class Context:
         self.slowlock = threading.Lock()
         self.fastlock = threading.Lock()
         i = Interpreter(self.lazyname, self.slowglobals)
-        self.interpreter = i if config.Lurlene['lazy'] else i.justexec
+        self.interpreter = i if config.Lurlene.lazy else i.justexec
 
     def update(self, text):
         addupdate = []
