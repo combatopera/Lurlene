@@ -16,12 +16,13 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .context import Context
+from types import SimpleNamespace
 import unittest
 
 class TestContext(unittest.TestCase):
 
     tuning = None
-    Lurlene = dict(lazy = False)
+    Lurlene = SimpleNamespace(lazy = False)
 
     def setUp(self):
         self.c = Context(self, ())
