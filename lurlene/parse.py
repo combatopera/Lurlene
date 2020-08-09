@@ -75,8 +75,8 @@ class VParse(Parse):
             m = self.pattern.fullmatch(word)
             if m is None:
                 raise BadWordException(word)
-            times = m.group(1)
-            width = 1 if times is None else float(times)
+            width = m.group(1)
+            width = 1 if width is None else float(width)
             initial = m.group(2)
             initial = self.type() if initial is None else self.type(initial)
             acc = m.group(3)
