@@ -86,8 +86,8 @@ class VParse(Parse):
             if octave is not None:
                 initial[0] += (1 if '+' in octave else -1) * len(octave)
             bias = m.group(5)
-            slash = m.group(6)
-            slide = (width if self.continuous else 0) if slash is None else (float(slash) if slash else width)
+            slide = m.group(6)
+            slide = (width if self.continuous else 0) if slide is None else (float(slide) if slide else width)
             if not self.sections.empty():
                 self._wrap(initial)
             hold = width - slide
