@@ -61,7 +61,7 @@ class Parse:
 
 class VParse(Parse):
 
-    pattern = re.compile('(?:([0-9.]+)x)?(-?[0-9.]+)?(#+|b+)?([+]+|-+)?(?:(/{1,2})([0-9.]*))?')
+    pattern = re.compile('(?:([0-9.]+)x)?(-?[0-9.]+)?(#+|b+)?([+]+|-+)?(?:/(/)?([0-9.]*))?')
 
     def __init__(self, type, step, continuous):
         self.type = type
@@ -86,8 +86,6 @@ class VParse(Parse):
             if octave is not None:
                 initial[0] += (1 if '+' in octave else -1) * len(octave)
             bias = m.group(5)
-            if bias is not None:
-                bias = len(bias) - 1
             slash = m.group(6)
             slide = (width if self.continuous else 0) if slash is None else (float(slash) if slash else width)
             if not self.sections.empty():
