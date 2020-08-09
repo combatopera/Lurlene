@@ -35,7 +35,7 @@ class TestEvent(unittest.TestCase):
         e = Event(35, None, self, namespace)
         f = Event(40, 5, self, namespace)
         speed = 10
-        kwargs = {(namespace, 'hmm'): V('20/80 100')}
+        kwargs = {(namespace, 'hmm'): V('80x20/ 100')}
         e(350, speed, {}, kwargs)
         e(360, speed, {}, kwargs)
         e(390, speed, {}, kwargs)
@@ -53,7 +53,7 @@ class TestSlice(unittest.TestCase):
 
     def test_initial(self):
         for end in 5, -96:
-            v = V('0/100 100')[:end]
+            v = V('100x/ 100')[:end]
             self.assertEqual(5, v.len)
             self.assertEqual(.5, v[.5])
             self.assertEqual(4.5, v[4.5])
@@ -61,7 +61,7 @@ class TestSlice(unittest.TestCase):
 
     def test_terminal(self):
         for start in 95,:
-            v = V('0/100 100')[start:]
+            v = V('100x/ 100')[start:]
             self.assertEqual(6, v.len)
             self.assertEqual(95.5, v[.5])
             self.assertEqual(99.5, v[4.5])
@@ -69,7 +69,7 @@ class TestSlice(unittest.TestCase):
             self.assertEqual(95.5, v[6.5])
 
     def test_embiggen(self):
-        v = V('5/4 9')[-1:11]
+        v = V('4x5/ 9')[-1:11]
         self.assertEqual(12, v.len)
         self.assertEqual(9, v[.5])
         self.assertEqual(5.5, v[1.5])
@@ -86,7 +86,7 @@ class TestSlice(unittest.TestCase):
         class Note:
             def on(self, val, frame):
                 vals.append(val[frame])
-        p = E(Note, '10x', val = V('/9 9'))[-6:]
+        p = E(Note, '10x', val = V('9x/ 9'))[-6:]
         p.apply(1, .5, {})
         p.apply(1, 4.5, {})
         p.apply(1, 5.5, {})

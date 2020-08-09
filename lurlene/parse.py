@@ -94,7 +94,8 @@ class VParse(Parse):
             if hold > 0:
                 self.sections.add(hold, FlatSection(initial))
             if slide:
-                self.sections.add(slide, (BiasSection if bias else Section)(initial))
+                # XXX: Pre-slide initial by excess slide if any?
+                self.sections.add(min(width, slide), (BiasSection if bias else Section)(initial))
 
         def wrap(self, successor):
             if successor is None:

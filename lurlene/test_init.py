@@ -34,32 +34,36 @@ class TestV(unittest.TestCase):
         self.assertEqual(2, v[.5])
 
     def test_slide(self):
-        v = V('0/1 5/1')
-        self.assertEqual(0, v[0])
-        self.assertEqual(5, v[1])
-        self.assertEqual(2.5, v[.5])
-        self.assertEqual(2.5, v[1.5])
+        for text in '0/1 5/1', '0/ 5/', '/ 5/':
+            v = V(text)
+            self.assertEqual(0, v[0])
+            self.assertEqual(5, v[1])
+            self.assertEqual(2.5, v[.5])
+            self.assertEqual(2.5, v[1.5])
 
     def test_slide2(self):
-        v = V('0/5 5/1')
-        self.assertEqual(0, v[0])
-        self.assertEqual(1, v[1])
-        self.assertEqual(5, v[5])
-        self.assertEqual(0, v[6])
-        self.assertEqual(2.5, v[5.5])
+        for text in '5x0/5 5/1', '5x0/ 5/', '5x/ 5/':
+            v = V(text)
+            self.assertEqual(0, v[0])
+            self.assertEqual(1, v[1])
+            self.assertEqual(5, v[5])
+            self.assertEqual(0, v[6])
+            self.assertEqual(2.5, v[5.5])
 
     def test_short(self):
-        v = V('.5x7/.5 8')
-        self.assertEqual(7, v[0])
-        self.assertEqual(7.5, v[.25])
-        self.assertEqual(8, v[.5])
+        for text in '.5x7/.5 8', '.5x7/ 8':
+            v = V(text)
+            self.assertEqual(7, v[0])
+            self.assertEqual(7.5, v[.25])
+            self.assertEqual(8, v[.5])
 
     def test_mul(self):
-        v = V('5x0/1 5')
-        self.assertEqual(0, v[0])
-        self.assertEqual(0, v[4])
-        self.assertEqual(2.5, v[4.5])
-        self.assertEqual(5, v[5])
+        for text in '5x0/1 5', '5x/1 5':
+            v = V(text)
+            self.assertEqual(0, v[0])
+            self.assertEqual(0, v[4])
+            self.assertEqual(2.5, v[4.5])
+            self.assertEqual(5, v[5])
 
     def test_mul2(self):
         v = V('5x0/2 5')
@@ -76,33 +80,36 @@ class TestV(unittest.TestCase):
         self.assertEqual(5, v[5])
 
     def test_step(self):
-        v = V('1 2 3/1', step = 5)
-        self.assertEqual(1, v[0])
-        self.assertEqual(3, v[2])
-        self.assertEqual(6, v[3])
-        self.assertEqual(4.5, v[2.5])
-        self.assertEqual(-4, v[-3])
+        for text in '1 2 3/1', '1 2 3/':
+            v = V(text, step = 5)
+            self.assertEqual(1, v[0])
+            self.assertEqual(3, v[2])
+            self.assertEqual(6, v[3])
+            self.assertEqual(4.5, v[2.5])
+            self.assertEqual(-4, v[-3])
 
     def test_step2(self):
-        v = V('1 2 3/0', step = 5)
-        self.assertEqual(1, v[0])
-        self.assertEqual(3, v[2])
-        self.assertEqual(6, v[3])
-        self.assertEqual(3, v[2.5])
-        self.assertEqual(-4, v[-3])
+        for text in '1 2 3/0', '1 2 3':
+            v = V(text, step = 5)
+            self.assertEqual(1, v[0])
+            self.assertEqual(3, v[2])
+            self.assertEqual(6, v[3])
+            self.assertEqual(3, v[2.5])
+            self.assertEqual(-4, v[-3])
 
     def test_loop(self):
-        v = V('1 2,3 4/1')
-        self.assertEqual(1, v[0])
-        self.assertEqual(2, v[1])
-        self.assertEqual(3, v[2])
-        self.assertEqual(4, v[3])
-        self.assertEqual(3.5, v[3.5])
-        self.assertEqual(3, v[4])
-        self.assertEqual(4, v[5])
+        for text in '1 2,3 4/1', '1 2,3 4/':
+            v = V(text)
+            self.assertEqual(1, v[0])
+            self.assertEqual(2, v[1])
+            self.assertEqual(3, v[2])
+            self.assertEqual(4, v[3])
+            self.assertEqual(3.5, v[3.5])
+            self.assertEqual(3, v[4])
+            self.assertEqual(4, v[5])
 
     def test_loop2(self):
-        v = V('13/14,6') + V('.25')
+        v = V('14x13/,6') + V('.25')
         self.assertEqual(13.25, v[0])
         self.assertEqual(12.75, v[1])
         self.assertEqual(6.75, v[13])
@@ -111,7 +118,7 @@ class TestV(unittest.TestCase):
         self.assertEqual(6.25, v[100])
 
     def test_bias(self):
-        v = V('13//12 10/1')
+        v = V('12x13// 10/')
         self.assertEqual(13.375, v[.5])
         self.assertEqual(13.125, v[1.5])
         self.assertEqual(12.875, v[2.5])
@@ -124,7 +131,7 @@ class TestV(unittest.TestCase):
         self.assertEqual(13.125, v[14.5])
 
     def test_bias2(self):
-        v = V('12//5,13')
+        v = V('5x12//,13')
         self.assertAlmostEqual(11.6, v[.5])
         self.assertAlmostEqual(11.8, v[1.5])
         self.assertAlmostEqual(12, v[2.5])
@@ -136,7 +143,7 @@ class TestV(unittest.TestCase):
         self.assertAlmostEqual(13, v[99])
 
     def test_bias3(self):
-        v = V('12//5,13') << 1
+        v = V('5x12//,13') << 1
         self.assertAlmostEqual(11.6, v[-.5])
         self.assertAlmostEqual(11.8, v[.5])
         self.assertAlmostEqual(12, v[1.5])
@@ -148,7 +155,7 @@ class TestV(unittest.TestCase):
         self.assertAlmostEqual(13, v[99])
 
     def test_doubleshift(self):
-        v = (V('/100 100') >> -5).of(10) >> 1
+        v = (V('100x/ 100') >> -5).of(10) >> 1
         for x, y in outerzip([5, 5.1, 5.2, 5.3, 5.4], [v[i] for i in range(1, 6)]):
             self.assertAlmostEqual(x, y)
 

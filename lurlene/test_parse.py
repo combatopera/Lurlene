@@ -40,7 +40,7 @@ class TestVParse(TestCase):
         self.assertEqual([1, None, 1, -4], self._perframes(sections))
 
     def test_slides(self):
-        sections = VParse(float, 0, False)('5/.5 4/1 3/2 2/1', None) # Width of first word still implicitly 1.
+        sections = VParse(float, 0, False)('5/.5 4/1 2x3/ 2/1', None) # Width of first word still implicitly 1.
         self.assertEqual([0, .5, 1, 2, 4], sections.frames)
         self.assertEqual(5, sections.len)
         self.assertEqual([5, 5, 4, 3, 2], [s.initial for s in sections.sections])
@@ -59,7 +59,7 @@ class TestVParse(TestCase):
         self.assertEqual([7, None], self._perframes(sections))
 
     def test_combo(self):
-        sections = VParse(float, 0, False)('3x4/5 0/1', None) # Total width is biggest explicit number.
+        sections = VParse(float, 0, False)('5x4/7 0/1', None) # Currently excess slide is ignored.
         self.assertEqual([0, 5], sections.frames)
         self.assertEqual(6, sections.len)
         self.assertEqual([4, 0], [s.initial for s in sections.sections])
