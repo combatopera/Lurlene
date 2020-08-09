@@ -81,7 +81,7 @@ class Sections:
             else:
                 t = self.sections[0]
                 tframes = self.len
-            s.perframe = (t.initial - s.initial) / (tframes - self.frames[i])
+            s.wrap((t.initial - s.initial) / (tframes - self.frames[i]))
 
     def empty(self):
         return not self.frames
