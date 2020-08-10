@@ -106,7 +106,7 @@ class VParse(Parse):
 
         def _wrap(self, value):
             lastframe, lastsection = self.sections.at(-1)
-            lastsection.wrap((value - lastsection.initial) / (self.sections.len - lastframe))
+            lastsection.settarget((value - lastsection.initial) / (self.sections.len - lastframe))
 
 def rebase(n, frombase = 1):
     return np.sign(n) * max(0, abs(n) - frombase)
