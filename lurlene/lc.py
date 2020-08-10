@@ -19,8 +19,9 @@ import bisect, numpy as np, math
 
 class BaseSection:
 
-    def __init__(self, initial, width):
+    def __init__(self, initial, excess, width):
         self.initial = initial
+        self.excess = excess
         self.width = width
 
     def getvalue(self, frame, xadjust):
@@ -37,10 +38,10 @@ class FlatSection(BaseSection):
 class Section(BaseSection):
 
     def unbiased(self, frame):
-        return self.initial + frame * self.perframe
+        return self.initial + (self.excess + frame) * self.perframe
 
     def settarget(self, target):
-        self.perframe = (target - self.initial) / self.width
+        self.perframe = (target - self.initial) / (self.excess + self.width)
 
 class BiasSection(Section):
 
@@ -65,7 +66,7 @@ class Sections:
 
     def init(self, sections, initials):
         self.frames = sections.frames.copy()
-        self.sections = [type(s)(i, s.width) for s, i in zip(sections.sections, initials)]
+        self.sections = [type(s)(i, s.excess, s.width) for s, i in zip(sections.sections, initials)]
         self.len = sections.len
         n = len(self.sections)
         for i in range(n):

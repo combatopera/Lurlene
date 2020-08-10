@@ -59,11 +59,25 @@ class TestVParse(TestCase):
         self.assertEqual([7, None], self._perframes(sections))
 
     def test_combo(self):
-        sections = VParse(float, 0, False)('5x4/7 0/1', None) # Currently excess slide is ignored.
+        sections = VParse(float, 0, False)('5x4/10 0/1', None)
         self.assertEqual([0, 5], sections.frames)
         self.assertEqual(6, sections.len)
         self.assertEqual([4, 0], [s.initial for s in sections.sections])
-        self.assertEqual([-.8, 4], self._perframes(sections))
+        self.assertEqual([-.4, 4], self._perframes(sections))
+
+    def test_excess(self):
+        sections = VParse(float, 0, False)('5/ 6/2 7', None)
+        self.assertEqual([0, 1, 2], sections.frames)
+        self.assertEqual(3, sections.len)
+        self.assertEqual([5, 6, 7], [s.initial for s in sections.sections])
+        self.assertEqual([1, .5, None], self._perframes(sections))
+
+    def test_excess2(self):
+        sections = VParse(float, 0, False)('5/2 6/', None)
+        self.assertEqual([0, 1], sections.frames)
+        self.assertEqual(2, sections.len)
+        self.assertEqual([5, 6], [s.initial for s in sections.sections])
+        self.assertEqual([.5, -1], self._perframes(sections))
 
     def test_halfnotes(self):
         sections = VParse(float, 0, False)('2.5x4/1 0/1', None) # Implicit slide is still 1.
