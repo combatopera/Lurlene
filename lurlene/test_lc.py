@@ -56,8 +56,8 @@ class TestEvent(unittest.TestCase):
                 calls.append(['on', frame])
             def off(self, onframes, frame):
                 calls.append(['off', onframes, frame])
-        e = E(MyNote, '2 2/1 2/')
-        for f in range(6):
+        e = E(MyNote, '2 2/1 2/ 2//1 2//')
+        for f in range(20):
             e.apply(1, f + .5, {})
         self.assertEqual([
             ['on', .5],
@@ -66,7 +66,8 @@ class TestEvent(unittest.TestCase):
             ['off', 1, 1.5],
             ['off', 0, .5],
             ['off', 0, 1.5],
-        ], calls)
+            ['on', .5],
+        ] * 2, calls)
 
 class TestSlice(unittest.TestCase):
 

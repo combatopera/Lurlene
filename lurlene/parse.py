@@ -132,7 +132,7 @@ def concat(scriptcls, parser, scriptforest, kwargs):
 
 class EParse(Parse):
 
-    pattern = re.compile('(?:([0-9]+)x)?(-?[0-9.]+)?(?:/([0-9.]*))?')
+    pattern = re.compile('(?:([0-9]+)x)?(-?[0-9.]+)?(?:/(/)?([0-9.]*))?')
 
     def __init__(self, program, namespace):
         self.program = program
@@ -151,7 +151,7 @@ class EParse(Parse):
                 raise BadWordException(word)
             width = m.group(2)
             width = 1 if width is None else float(width)
-            slash = m.group(3)
+            slash = m.group(4)
             offwidth = 0 if slash is None else (float(slash) if slash else width)
             onwidth = max(0, width - offwidth)
             for _ in range(count):
