@@ -174,7 +174,7 @@ class Event:
                         yield name, (kwargs[key] >> -self.absframe).of(speed) >> shift
         if self.onframes is None:
             if self.program.onparams is not None:
-                note.on(**dict(noteargs(self.program.onparams, 0, **chips)))
+                note.on(**dict(noteargs(self.program.onparams, 0, **chips, onframes = None)))
         else:
             if self.program.offparams is not None:
                 onframes = self.onframes * speed
