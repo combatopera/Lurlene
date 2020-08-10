@@ -179,6 +179,9 @@ class Event:
             if self.program.offparams is not None:
                 onframes = self.onframes * speed
                 note.off(**dict(noteargs(self.program.offparams, onframes, **chips, onframes = onframes)))
+            elif self.program.onparams is not None:
+                onframes = self.onframes * speed
+                note.on(**dict(noteargs(self.program.onparams, onframes, **chips, onframes = onframes)))
 
 class Frame(float):
 
