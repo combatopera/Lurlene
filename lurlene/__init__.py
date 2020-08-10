@@ -29,7 +29,7 @@ def E(cls, *script, initargs = (), **kwargs):
     kwargs = {(namespace, name): value for name, value in kwargs.items()}
     return concat(Script, EParse(Program(cls, initargs), namespace), script, kwargs)
 
-unit = E(lambda: None, '1')
+unit = E(None, '//')
 naturalminor = V('0 2 3 5 7 8 10', step = 12, continuous = True)
 harmonicminor = V('0 2 3 5 7 8 11', step = 12, continuous = True)
 major = V('0 2 4 5 7 9 11', step = 12, continuous = True)
