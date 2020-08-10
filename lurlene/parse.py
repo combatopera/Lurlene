@@ -91,7 +91,7 @@ class VParse(Parse):
             if not self.sections.empty():
                 self._wrap(initial)
             hold = width - slide
-            if hold > 0:
+            if hold > 0 or (not hold and not slide):
                 self.sections.add(FlatSection(initial, None, hold))
             if slide:
                 self.sections.add((BiasSection if bias else Section)(initial, max(0, slide - width), min(width, slide)))
