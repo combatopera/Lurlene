@@ -31,7 +31,7 @@ class FlatSection(BaseSection):
     def unbiased(self, frame):
         return self.initial
 
-    def settarget(self, perframe):
+    def settarget(self, target):
         pass
 
 class Section(BaseSection):
@@ -39,17 +39,17 @@ class Section(BaseSection):
     def unbiased(self, frame):
         return self.initial + frame * self.perframe
 
-    def settarget(self, perframe):
-        self.perframe = perframe
+    def settarget(self, target):
+        self.perframe = (target - self.initial) / self.width
 
 class BiasSection(Section):
 
     def getvalue(self, frame, xadjust):
         return super().getvalue(frame, xadjust) + self.bias
 
-    def settarget(self, perframe):
-        super().settarget(perframe)
-        self.bias = float(np.sign(perframe)) / -2
+    def settarget(self, target):
+        super().settarget(target)
+        self.bias = float(np.sign(self.perframe)) / -2
 
 class Sections:
 
@@ -69,14 +69,11 @@ class Sections:
         self.len = sections.len
         n = len(self.sections)
         for i in range(n):
-            s = self.sections[i]
             if i + 1 < n:
                 t = self.sections[i + 1]
-                tframes = self.frames[i + 1]
             else:
                 t = self.sections[0]
-                tframes = self.len
-            s.settarget((t.initial - s.initial) / (tframes - self.frames[i]))
+            self.sections[i].settarget(t.initial)
 
     def empty(self):
         return not self.frames

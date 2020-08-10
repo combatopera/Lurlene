@@ -105,8 +105,8 @@ class VParse(Parse):
                 self._wrap(successor[0]) # TODO: Unit-test what effect step would have.
 
         def _wrap(self, value):
-            lastframe, lastsection = self.sections.at(-1)
-            lastsection.settarget((value - lastsection.initial) / (self.sections.len - lastframe))
+            _, lastsection = self.sections.at(-1)
+            lastsection.settarget(value)
 
 def rebase(n, frombase = 1):
     return np.sign(n) * max(0, abs(n) - frombase)
