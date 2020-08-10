@@ -145,14 +145,14 @@ class EParse(Parse):
             m = self.pattern.fullmatch(word)
             if m is None:
                 raise BadWordException(word)
-            times = m.group(1)
-            count = 1 if times is None else int(times)
+            count = m.group(1)
+            count = 1 if count is None else int(count)
             if count < 1:
                 raise BadWordException(word)
             width = m.group(2)
             width = 1 if width is None else float(width)
-            slash = m.group(4)
-            offwidth = 0 if slash is None else (float(slash) if slash else width)
+            offwidth = m.group(4)
+            offwidth = 0 if offwidth is None else (float(offwidth) if offwidth else width)
             onwidth = max(0, width - offwidth)
             for _ in range(count):
                 if onwidth:
