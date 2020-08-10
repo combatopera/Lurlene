@@ -33,28 +33,27 @@ class FlatSection(BaseSection):
     def wrap(self, perframe):
         pass
 
-class Section(BaseSection):
+class BaseSlideSection(BaseSection):
+
+    def unbiased(self, frame):
+        return self.initial + frame * self.perframe
+
+    def wrap(self, perframe):
+        self.perframe = perframe
+
+class Section(BaseSlideSection):
 
     def getvalue(self, frame, xadjust):
         return self.unbiased(frame)
 
-    def unbiased(self, frame):
-        return self.initial + frame * self.perframe
-
-    def wrap(self, perframe):
-        self.perframe = perframe
-
-class BiasSection(BaseSection):
+class BiasSection(BaseSlideSection):
 
     def getvalue(self, frame, xadjust):
         return self.unbiased(frame) + self.bias
 
-    def unbiased(self, frame):
-        return self.initial + frame * self.perframe
-
     def wrap(self, perframe):
+        super().wrap(perframe)
         self.bias = float(np.sign(perframe)) / -2
-        self.perframe = perframe
 
 class Sections:
 
