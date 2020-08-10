@@ -170,6 +170,10 @@ class TestV(unittest.TestCase):
         v = V('5/ 0x6 4')
         self.assertEqual([5, 5.5, 4, 4, 5, 5.5], [v[i/2] for i in range(6)])
 
+    def test_slidetarget2(self):
+        v = V('0x6 4 5/')
+        self.assertEqual([4, 4, 5, 5.5, 4, 4], [v[i/2] for i in range(6)])
+
 class TestD(unittest.TestCase):
 
     def test_works(self):
