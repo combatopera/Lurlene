@@ -151,6 +151,7 @@ class EParse(Parse):
                 raise BadWordException(word)
             width = m.group(2)
             width = 1 if width is None else float(width)
+            hardoff = m.group(3)
             offwidth = m.group(4)
             offwidth = 0 if offwidth is None else (float(offwidth) if offwidth else width)
             onwidth = max(0, width - offwidth)
@@ -158,7 +159,7 @@ class EParse(Parse):
                 if onwidth:
                     self.sections.add(EventSection(self.sections.len, None, onwidth, self.program, self.namespace))
                 if offwidth:
-                    self.sections.add(EventSection(self.sections.len, onwidth, offwidth, self.program, self.namespace))
+                    self.sections.add(EventSection(self.sections.len, onwidth, offwidth, silence if hardoff else self.program, self.namespace))
 
         def wrap(self, successor):
             pass
@@ -180,3 +181,5 @@ class Program:
 
     def new(self):
         return self.cls(*self.init)
+
+silence = Program(object, ())
