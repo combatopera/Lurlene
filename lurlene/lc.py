@@ -19,8 +19,9 @@ import bisect, numpy as np, math
 
 class BaseSection:
 
-    def __init__(self, initial):
+    def __init__(self, initial, width):
         self.initial = initial
+        self.width = width
 
     def getvalue(self, frame, xadjust):
         return self.unbiased(frame)
@@ -57,14 +58,14 @@ class Sections:
         self.sections = []
         self.len = 0
 
-    def add(self, width, section):
+    def add(self, section):
         self.frames.append(self.len)
         self.sections.append(section)
-        self.len += width # TODO LATER: Error accumulation.
+        self.len += section.width # TODO LATER: Error accumulation.
 
     def init(self, sections, initials):
         self.frames = sections.frames.copy()
-        self.sections = [type(s)(i) for s, i in zip(sections.sections, initials)]
+        self.sections = [type(s)(i, s.width) for s, i in zip(sections.sections, initials)]
         self.len = sections.len
         n = len(self.sections)
         for i in range(n):
@@ -143,9 +144,10 @@ class Operators:
 
 class EventSection:
 
-    def __init__(self, relframe, onframes, program, namespace):
+    def __init__(self, relframe, onframes, width, program, namespace):
         self.relframe = relframe
         self.onframes = onframes
+        self.width = width
         self.program = program
         self.namespace = namespace
 
