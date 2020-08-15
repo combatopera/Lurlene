@@ -16,7 +16,7 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import V, D, E, _topitch, major
-from .util import outerzip
+from diapyr.util import outerzip
 import unittest
 
 class TestV(unittest.TestCase):

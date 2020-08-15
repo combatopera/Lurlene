@@ -17,9 +17,9 @@
 
 from .context import Sections, Context
 from .iface import Config
-from .util import threadlocals, catch, outerzip
+from .util import threadlocals, catch
 from diapyr import types
-from diapyr.util import innerclass, singleton
+from diapyr.util import innerclass, outerzip, singleton
 from functools import partial
 import logging, bisect, difflib
 

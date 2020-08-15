@@ -36,24 +36,6 @@ def threadlocals(**kwargs):
             else:
                 setattr(local, name, value)
 
-def outerzip(*iterables):
-    iterators = [iter(i) for i in iterables]
-    def g():
-        nonlocal running
-        for i in iterators:
-            try:
-                yield next(i)
-            except StopIteration:
-                running -= 1
-                yield
-    n = len(iterators)
-    while True:
-        running = n
-        values = tuple(g())
-        if not running:
-            break
-        yield values
-
 @contextmanager
 def catch(obj, *logargs):
     if not hasattr(obj, '_onfire'):
