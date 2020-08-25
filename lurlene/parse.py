@@ -153,7 +153,7 @@ class EParse(Parse):
             width = 1 if width is None else float(width)
             hardoff = m.group(3)
             offwidth = m.group(4)
-            offwidth = 0 if offwidth is None else (float(offwidth) if offwidth else width) # TODO: Handle excess offwidth.
+            offwidth = 0 if offwidth is None else (float(offwidth) if offwidth else width) # FIXME: Ignore excess offwidth.
             onwidth = max(0, width - offwidth)
             for _ in range(count):
                 if onwidth:
