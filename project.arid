@@ -18,9 +18,9 @@
 author = Andrzej Cichocki
 name = Lurlene
 requires +=
-    diapyr
-    numpy
-    splut
-    timelyOSC
+    diapyr>=18
+    numpy>=1.19.1
+    splut>=4
+    timelyOSC>=4
 years += 2019
 pyversions += 3
