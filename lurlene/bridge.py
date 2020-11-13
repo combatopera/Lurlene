@@ -57,11 +57,7 @@ class LiveCodingBridge:
         def _quiet(self):
             for channel in self.channels:
                 for proxy in channel.nametoproxy.values():
-                    # FIXME: Also disable timer effect (without resetting it).
-                    proxy.noiseflag = False
-                    proxy.toneflag = False
-                    proxy.envflag = False
-                    proxy.level = 0
+                    proxy.blank()
 
         def _step(self, speed, section, frame):
             self._quiet()
