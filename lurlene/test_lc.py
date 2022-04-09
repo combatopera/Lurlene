@@ -17,9 +17,9 @@
 
 from . import V, E
 from .lc import Event
-import unittest
+from unittest import TestCase
 
-class TestEvent(unittest.TestCase):
+class TestEvent(TestCase):
 
     def test_offkwarg(self):
         namespace = object()
@@ -69,7 +69,7 @@ class TestEvent(unittest.TestCase):
             ['on', .5],
         ] * 2, calls)
 
-class TestSlice(unittest.TestCase):
+class TestSlice(TestCase):
 
     def test_initial(self):
         for end in 5, -96:

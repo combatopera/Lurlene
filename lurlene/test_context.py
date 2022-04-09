@@ -17,9 +17,9 @@
 
 from .context import Context
 from types import SimpleNamespace
-import unittest
+from unittest import TestCase
 
-class TestContext(unittest.TestCase):
+class TestContext(TestCase):
 
     tuning = None
     Lurlene = SimpleNamespace(lazy = False)

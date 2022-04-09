@@ -17,9 +17,9 @@
 
 from .bridge import LiveCodingBridge
 from .context import Sections
-import unittest
+from unittest import TestCase
 
-class TestAdjustFrameIndex(unittest.TestCase):
+class TestAdjustFrameIndex(TestCase):
 
     class Pattern:
 

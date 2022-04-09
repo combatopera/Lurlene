@@ -17,9 +17,9 @@
 
 from . import V, D, E, _topitch, major
 from diapyr.util import outerzip
-import unittest
+from unittest import TestCase
 
-class TestV(unittest.TestCase):
+class TestV(TestCase):
 
     def test_trivial(self):
         v = V('0')
@@ -174,7 +174,7 @@ class TestV(unittest.TestCase):
         v = V('0x6 4 5/')
         self.assertEqual([4, 4, 5, 5.5, 4, 4], [v[i/2] for i in range(6)])
 
-class TestD(unittest.TestCase):
+class TestD(TestCase):
 
     def test_works(self):
         d = D('1 2 3 + 2+ - 2- ++ -- 2++ 2-- 3#+ 4bb-')
@@ -226,7 +226,7 @@ class TestD(unittest.TestCase):
         self.assertEqual([2, 3, 4, 4, 4, .5j+2, 1j, 1j+1, 1j+2, .5j+2], xform(1))
         self.assertEqual([4, .5j+2, 1j, 1j, 1j, 1j+1, 1j+2, 1j+3, 1j+4, .5j+4], xform(2))
 
-class TestE(unittest.TestCase):
+class TestE(TestCase):
 
     def test_works(self):
         e = E(None, '4x1 3/1 1')
@@ -333,7 +333,7 @@ class TestE(unittest.TestCase):
         self.assertEqual(13.5, s[13.9].absframe)
         self.assertEqual(14, s[14].absframe)
 
-class TestInit(unittest.TestCase):
+class TestInit(TestCase):
 
     def test_modes(self):
         self.assertEqual([60, 62, 64, 65, 67, 69, 71, 72], [_topitch(major, 1, 60, [0, d, 0]) for d in range(8)])
