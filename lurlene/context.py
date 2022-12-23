@@ -34,7 +34,6 @@ class Context:
     def __init__(self, config, sections = [(E(XTRA, '11/1'),)]):
         self.fastglobals = self.slowglobals = dict(
             {self.lazyname: Lazy},
-            __name__ = 'lurlene.context',
             tuning = config.tuning,
             mode = 1,
             speed = 16, # XXX: Needed when sections is empty?
