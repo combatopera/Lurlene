@@ -24,7 +24,7 @@ class TestTransform(TestCase):
         g = dict(a = 'A', b = 'B', L = lambda _, name: f"!{name}")
         exec('', g)
         snapshot = g.copy()
-        Interpreter('L', g)('''x = a
+        Interpreter('L', g).interpret('''x = a
 y = b
 z = y
 w = x

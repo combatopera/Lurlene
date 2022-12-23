@@ -50,7 +50,7 @@ class Interpreter:
         self.lazyname = lazyname
         self.globalsdict = globalsdict
 
-    def __call__(self, text):
+    def interpret(self, text):
         transform = self.Transform()
         for statement in ast.parse(text).body:
             self.justexec(ast.fix_missing_locations(ast.Module([transform.visit(statement)]))) # XXX: Are locations accurate?

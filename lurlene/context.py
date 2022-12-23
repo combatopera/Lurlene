@@ -46,7 +46,7 @@ class Context:
         self.slowlock = threading.Lock()
         self.fastlock = threading.Lock()
         i = Interpreter(self.lazyname, self.slowglobals)
-        self.interpreter = i if config.Lurlene.lazy else i.justexec
+        self.interpret = i.interpret if config.Lurlene.lazy else i.justexec
 
     def update(self, text):
         addupdate = []
@@ -56,7 +56,7 @@ class Context:
                 self.fastglobals = self.slowglobals.copy()
                 self.fastupdates = self.slowupdates.copy()
             before = self.slowglobals.copy()
-            self.interpreter(text) # XXX: Impact of modifying mutable objects?
+            self.interpret(text) # XXX: Impact of modifying mutable objects?
             for name, value in self.slowglobals.items():
                 if not (name in before and value is before[name]):
                     self.slowupdates[name] = value
