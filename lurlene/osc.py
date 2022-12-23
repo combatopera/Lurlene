@@ -52,7 +52,7 @@ class OSCClient:
         except KeyError:
             log.warning("Unhandled message: %s", message)
             return
-        handler(timetags, message, lambda reply: self.sock.sendto(reply, udpaddr))
+        handler.handle(timetags, message, lambda reply: self.sock.sendto(reply, udpaddr))
 
     def _elements(self, udpaddr, timetags, elements):
         for element in elements:
@@ -90,7 +90,7 @@ class LCHandler(Handler):
     def __init__(self, context):
         self.context = context
 
-    def __call__(self, timetags, message, reply):
+    def handle(self, timetags, message, reply):
         try:
             text, = message.args
             self.context.update(text)
@@ -105,7 +105,7 @@ class InterruptHandler(Handler):
     def __init__(self):
         pass
 
-    def __call__(self, timetags, message, reply):
+    def handle(self, timetags, message, reply):
         pass # Do nothing.
 
 def configure(di):
