@@ -26,21 +26,21 @@ class TestVParse(TestCase):
         return [getattr(s, 'perframe', None) for s in sections.sections]
 
     def test_works(self):
-        sections = VParse(float, 0, False)('1/1 2/1 .5/1', None)
+        sections = VParse(float, 0, False).parse('1/1 2/1 .5/1', None)
         self.assertEqual([0, 1, 2], sections.frames)
         self.assertEqual(3, sections.len)
         self.assertEqual([1, 2, .5], [s.initial for s in sections.sections])
         self.assertEqual([1, -1.5, .5], self._perframes(sections))
 
     def test_widths(self):
-        sections = VParse(float, 0, False)('1x/1 2x1/1 .5x2/.5', None) # Default value is 0.
+        sections = VParse(float, 0, False).parse('1x/1 2x1/1 .5x2/.5', None) # Default value is 0.
         self.assertEqual([0, 1, 2, 3], sections.frames)
         self.assertEqual(3.5, sections.len)
         self.assertEqual([0, 1, 1, 2], [s.initial for s in sections.sections])
         self.assertEqual([1, None, 1, -4], self._perframes(sections))
 
     def test_slides(self):
-        sections = VParse(float, 0, False)('5/.5 4/1 2x3/ 2/1', None) # Width of first word still implicitly 1.
+        sections = VParse(float, 0, False).parse('5/.5 4/1 2x3/ 2/1', None) # Width of first word still implicitly 1.
         self.assertEqual([0, .5, 1, 2, 4], sections.frames)
         self.assertEqual(5, sections.len)
         self.assertEqual([5, 5, 4, 3, 2], [s.initial for s in sections.sections])
@@ -48,39 +48,39 @@ class TestVParse(TestCase):
 
     def test_x(self):
         with self.assertRaises(BadWordException) as cm:
-            VParse(float, 0, False)('x', None)
+            VParse(float, 0, False).parse('x', None)
         self.assertEqual(('x',), cm.exception.args)
 
     def test_slash(self):
-        sections = VParse(float, 0, False)('/ 7', None)
+        sections = VParse(float, 0, False).parse('/ 7', None)
         self.assertEqual([0, 1], sections.frames)
         self.assertEqual(2, sections.len)
         self.assertEqual([0, 7], [s.initial for s in sections.sections])
         self.assertEqual([7, None], self._perframes(sections))
 
     def test_combo(self):
-        sections = VParse(float, 0, False)('5x4/10 0/1', None)
+        sections = VParse(float, 0, False).parse('5x4/10 0/1', None)
         self.assertEqual([0, 5], sections.frames)
         self.assertEqual(6, sections.len)
         self.assertEqual([4, 0], [s.initial for s in sections.sections])
         self.assertEqual([-.4, 4], self._perframes(sections))
 
     def test_excess(self):
-        sections = VParse(float, 0, False)('5/ 6/2 7', None)
+        sections = VParse(float, 0, False).parse('5/ 6/2 7', None)
         self.assertEqual([0, 1, 2], sections.frames)
         self.assertEqual(3, sections.len)
         self.assertEqual([5, 6, 7], [s.initial for s in sections.sections])
         self.assertEqual([1, .5, None], self._perframes(sections))
 
     def test_excess2(self):
-        sections = VParse(float, 0, False)('5/2 6/', None)
+        sections = VParse(float, 0, False).parse('5/2 6/', None)
         self.assertEqual([0, 1], sections.frames)
         self.assertEqual(2, sections.len)
         self.assertEqual([5, 6], [s.initial for s in sections.sections])
         self.assertEqual([.5, -1], self._perframes(sections))
 
     def test_halfnotes(self):
-        sections = VParse(float, 0, False)('2.5x4/1 0/1', None) # Implicit slide is still 1.
+        sections = VParse(float, 0, False).parse('2.5x4/1 0/1', None) # Implicit slide is still 1.
         self.assertEqual([0, 1.5, 2.5], sections.frames)
         self.assertEqual(3.5, sections.len)
         self.assertEqual([4, 4, 0], [s.initial for s in sections.sections])
@@ -89,14 +89,14 @@ class TestVParse(TestCase):
 class TestEParse(TestCase):
 
     def test_works(self):
-        sections = EParse(None, None)('1 2 .5', None)
+        sections = EParse(None, None).parse('1 2 .5', None)
         self.assertEqual([0, 1, 3], sections.frames)
         self.assertEqual(3.5, sections.len)
         self.assertEqual([0, 1, 3], [s.relframe for s in sections.sections])
         self.assertEqual([None, None, None], [s.onframes for s in sections.sections])
 
     def test_repeats(self):
-        sections = EParse(None, None)('1x 2x3 3x2', None) # Default width is 1.
+        sections = EParse(None, None).parse('1x 2x3 3x2', None) # Default width is 1.
         self.assertEqual([0, 1, 4, 7, 9, 11], sections.frames)
         self.assertEqual(13, sections.len)
         self.assertEqual([0, 1, 4, 7, 9, 11], [s.relframe for s in sections.sections])
@@ -104,18 +104,18 @@ class TestEParse(TestCase):
 
     def test_badrepeat(self):
         with self.assertRaises(BadWordException) as cm:
-            EParse(None, None)('.5x1', None)
+            EParse(None, None).parse('.5x1', None)
         self.assertEqual(('.5x1',), cm.exception.args)
         with self.assertRaises(BadWordException) as cm:
-            EParse(None, None)('-1x1', None)
+            EParse(None, None).parse('-1x1', None)
         self.assertEqual(('-1x1',), cm.exception.args)
         with self.assertRaises(BadWordException) as cm:
-            EParse(None, None)('3 0x1 2', None)
+            EParse(None, None).parse('3 0x1 2', None)
         self.assertEqual(('0x1',), cm.exception.args)
 
     def test_noteoff(self):
         # In '/.5' default width is 1, in '.5/1' width is biggest explicit number:
-        sections = EParse(None, None)('/2 /.5 3/2 .5/1', None)
+        sections = EParse(None, None).parse('/2 /.5 3/2 .5/1', None)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], sections.frames)
         self.assertEqual(7, sections.len)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in sections.sections])

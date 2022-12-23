@@ -51,7 +51,7 @@ class BadWordException(Exception): pass
 
 class Parse:
 
-    def __call__(self, script, successor):
+    def parse(self, script, successor):
         session = self.Session()
         session.sections = Sections()
         for word in re.findall(r'[^\s|]+', script):
@@ -126,7 +126,7 @@ def concat(scriptcls, parser, scriptforest, kwargs):
     scripts = []
     successor = None
     for segment in reversed(_flatten(scriptforest).split(',')):
-        successor = scriptcls(parser(segment, successor), kwargs)
+        successor = scriptcls(parser.parse(segment, successor), kwargs)
         scripts.insert(0, successor)
     return scripts[0] if 1 == len(scripts) else Concat(*scripts)
 
