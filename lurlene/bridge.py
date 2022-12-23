@@ -16,8 +16,7 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .context import Sections, Context
-from .iface import Config
-from .util import threadlocals, catch
+from .util import catch, Config, threadlocals
 from diapyr import types
 from diapyr.util import innerclass, outerzip, singleton
 from functools import partial

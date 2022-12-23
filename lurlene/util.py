@@ -22,6 +22,8 @@ log = logging.getLogger(__name__)
 local = threading.local()
 deleted = object()
 
+class Config: pass
+
 @contextmanager
 def threadlocals(**kwargs):
     old = {name: getattr(local, name) if hasattr(local, name) else deleted for name in kwargs}

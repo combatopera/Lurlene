@@ -16,7 +16,7 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .context import Context
-from .iface import Config
+from .util import Config
 from diapyr import types
 from splut.bg import SimpleBackground
 import logging, socket, timelyOSC

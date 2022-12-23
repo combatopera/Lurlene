@@ -16,9 +16,8 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import E
-from .iface import Config
 from .transform import Interpreter
-from .util import Lazy
+from .util import Config, Lazy
 from .xtra import XTRA
 from diapyr import types
 import bisect, logging, numpy as np, threading
