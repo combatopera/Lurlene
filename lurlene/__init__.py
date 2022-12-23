@@ -15,33 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-def V(*script, step = 0, continuous = False):
-    from .parse import concat, StepScript, VParse
-    return concat(lambda *args: StepScript(*args, step), VParse(float, step, continuous), script, {})
+from . import api
+from diapyr.util import singleton
 
-def D(*script):
-    from .parse import concat, Script, VParse, vector
-    return concat(Script, VParse(vector, 0, False), script, {})
+@singleton
+class __all__(list):
 
-def E(cls, *script, initargs = (), **kwargs):
-    from .parse import concat, Script, EParse, Program
-    namespace = object()
-    kwargs = {(namespace, name): value for name, value in kwargs.items()}
-    return concat(Script, EParse(Program(cls, initargs), namespace), script, kwargs)
-
-unit = E(None, '//')
-naturalminor = V('0 2 3 5 7 8 10', step = 12, continuous = True)
-harmonicminor = V('0 2 3 5 7 8 11', step = 12, continuous = True)
-major = V('0 2 4 5 7 9 11', step = 12, continuous = True)
-octatonic = V('0 1 3 4 6 7 9 10', step = 12, continuous = True)
-wholetone = V('0 2 4 6 8 10', step = 12, continuous = True)
-
-def topitch(degree):
-    from .util import local
-    c = local.context
-    return _topitch(c.get('scale'), c.get('mode'), c.get('tonic'), degree)
-
-def _topitch(scale, mode, tonic, degree):
-    from .parse import rebase
-    mode = rebase(mode)
-    return tonic - scale[mode] + float((scale << mode)[degree[0] * scale.len + degree[1]] + degree[2])
+    def __init__(self):
+        for name in 'D E harmonicminor major naturalminor octatonic topitch unit V wholetone'.split():
+            globals()[name] = getattr(api, name)
+            self.append(name)

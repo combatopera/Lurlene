@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import E
+from .api import E
 from .transform import Interpreter
 from .util import Config, Lazy
 from .xtra import XTRA

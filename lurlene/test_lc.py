@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import V, E
+from .api import E, V
 from .lc import Event
 from unittest import TestCase
 

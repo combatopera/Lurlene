@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import V, D, _topitch, major
+from .api import D, major, _topitch, V
 from .pitches import E4
 
 class XTRA:
