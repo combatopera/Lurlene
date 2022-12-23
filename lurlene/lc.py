@@ -138,7 +138,7 @@ class Operators:
         return invs
 
     def apply(self, speed, frame, chips):
-        self.of(speed)[frame](frame, speed, chips, self.kwargs)
+        self.of(speed)[frame].perform(frame, speed, chips, self.kwargs)
 
 class EventSection:
 
@@ -160,7 +160,7 @@ class Event:
         self.program = program
         self.namespace = namespace
 
-    def __call__(self, frame, speed, chips, kwargs):
+    def perform(self, frame, speed, chips, kwargs):
         note = self.program.new() # XXX: Allow a note to maintain state?
         def noteargs(params, shift, **extras):
             for name in params:
@@ -197,9 +197,9 @@ class Overlay:
         self.e1 = e1
         self.e2 = e2
 
-    def __call__(self, *args):
+    def perform(self, *args):
         for e in self.e1, self.e2:
-            e(*args)
+            e.perform(*args)
 
 class Binary(Operators):
 
