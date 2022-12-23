@@ -50,6 +50,15 @@ def catch(obj, *logargs):
             log.exception(*logargs)
             obj._onfire = True
 
+class All(list):
+
+    def __init__(self, namespace):
+        self.namespace = namespace
+
+    def put(self, name, obj):
+        self.namespace[name] = obj
+        self.append(name)
+
 class Lazy: # XXX: Is this really the most maintainable way?
 
     def __init__(self, globalsdict, name):

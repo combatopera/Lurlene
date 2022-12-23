@@ -16,15 +16,10 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import api, scale
-from diapyr.util import singleton
+from .util import All
 
-@singleton
-class __all__(list):
-
-    def __init__(self):
-        for name in 'D', 'E', 'topitch', 'unit', 'V':
-            globals()[name] = getattr(api, name)
-            self.append(name)
-        for name in 'harmonicminor', 'major', 'naturalminor', 'octatonic', 'wholetone':
-            globals()[name] = getattr(scale, name)
-            self.append(name)
+__all__ = All(globals())
+for name in 'D', 'E', 'topitch', 'unit', 'V':
+    __all__.put(name, getattr(api, name))
+for name in 'harmonicminor', 'major', 'naturalminor', 'octatonic', 'wholetone':
+    __all__.put(name, getattr(scale, name))

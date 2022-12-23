@@ -15,14 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from diapyr.util import singleton
+from .util import All
 
-@singleton
-class __all__(list):
-
-    def __init__(self):
-        for octave in range(10):
-            for letter, offset in zip('CDEFGAB', [0, 2, 4, 5, 7, 9, 11]):
-                name = f"{letter}{octave}"
-                globals()[name] = (1 + octave) * 12 + offset
-                self.append(name)
+__all__ = All(globals())
+for octave in range(10):
+    for letter, offset in zip('CDEFGAB', [0, 2, 4, 5, 7, 9, 11]):
+        __all__.put(f"{letter}{octave}", (1 + octave) * 12 + offset)
