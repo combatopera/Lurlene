@@ -82,9 +82,9 @@ class OSCListen(SimpleBackground):
         while not self.quit:
             client.pumponeortimeout()
 
-class LCHandler(Handler):
+class LurleneHandler(Handler):
 
-    addresses = '/lc',
+    addresses = '/lurlene',
 
     @types(Context)
     def __init__(self, context):
@@ -109,6 +109,6 @@ class InterruptHandler(Handler):
         pass # Do nothing.
 
 def configure(di):
-    di.add(LCHandler)
+    di.add(LurleneHandler)
     di.add(InterruptHandler)
     di.add(OSCListen)
