@@ -20,9 +20,9 @@ from diapyr.util import singleton
 @singleton
 class __all__(list):
 
-  def __init__(self):
-    for octave in range(10):
-      for letter, offset in zip('CDEFGAB', [0, 2, 4, 5, 7, 9, 11]):
-        name = f"{letter}{octave}"
-        globals()[name] = (1 + octave) * 12 + offset
-        self.append(name)
+    def __init__(self):
+        for octave in range(10):
+            for letter, offset in zip('CDEFGAB', [0, 2, 4, 5, 7, 9, 11]):
+                name = f"{letter}{octave}"
+                globals()[name] = (1 + octave) * 12 + offset
+                self.append(name)
