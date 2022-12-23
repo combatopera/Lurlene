@@ -16,7 +16,7 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .api import D, _topitch, V
-from .pitches import E4
+from .pitch import E4
 from .scale import major
 
 class XTRA:
