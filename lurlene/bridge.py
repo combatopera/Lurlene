@@ -18,8 +18,9 @@
 from .context import Sections, Context
 from .util import catch, Config, threadlocals
 from diapyr import types
-from diapyr.util import innerclass, outerzip, singleton
+from diapyr.util import innerclass, singleton
 from functools import partial
+from itertools import zip_longest
 import logging, bisect, difflib
 
 log = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ class LiveCodingBridge:
 
         def __init__(self, chips):
             self.channels = [Channel(index, {name: proxy for name, proxy in zip(chips, proxies) if proxy is not None})
-                    for index, proxies in enumerate(outerzip(*chips.values()))]
+                    for index, proxies in enumerate(zip_longest(*chips.values()))]
 
         def _quiet(self):
             for channel in self.channels:

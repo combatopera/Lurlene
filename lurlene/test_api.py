@@ -17,7 +17,7 @@
 
 from .api import D, E, _topitch, V
 from .scale import major
-from diapyr.util import outerzip
+from itertools import zip_longest
 from unittest import TestCase
 
 class TestV(TestCase):
@@ -157,7 +157,7 @@ class TestV(TestCase):
 
     def test_doubleshift(self):
         v = (V('100x/ 100') >> -5).of(10) >> 1
-        for x, y in outerzip([5, 5.1, 5.2, 5.3, 5.4], [v[i] for i in range(1, 6)]):
+        for x, y in zip_longest([5, 5.1, 5.2, 5.3, 5.4], [v[i] for i in range(1, 6)]):
             self.assertAlmostEqual(x, y)
 
     def test_shiftstep(self):
