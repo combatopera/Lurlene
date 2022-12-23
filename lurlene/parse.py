@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .lc import Operators, Sections, FlatSection, BiasSection, Section, Concat, EventSection, Repeat, Mul
+from .model import Operators, Sections, FlatSection, BiasSection, Section, Concat, EventSection, Repeat, Mul
 from diapyr.util import innerclass
 import re, numpy as np, inspect, itertools
 

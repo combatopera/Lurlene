@@ -16,7 +16,7 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .api import E, V
-from .lc import Event
+from .model import Event
 from unittest import TestCase
 
 class TestEvent(TestCase):
