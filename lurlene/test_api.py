@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .api import D, E, major, _topitch, V
+from .api import D, E, _topitch, V
+from .scale import major
 from diapyr.util import outerzip
 from unittest import TestCase
 

@@ -15,16 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import api, scale
-from diapyr.util import singleton
+from .api import V
 
-@singleton
-class __all__(list):
-
-    def __init__(self):
-        for name in 'D', 'E', 'topitch', 'unit', 'V':
-            globals()[name] = getattr(api, name)
-            self.append(name)
-        for name in 'harmonicminor', 'major', 'naturalminor', 'octatonic', 'wholetone':
-            globals()[name] = getattr(scale, name)
-            self.append(name)
+harmonicminor = V('0 2 3 5 7 8 11', step = 12, continuous = True)
+major = V('0 2 4 5 7 9 11', step = 12, continuous = True)
+naturalminor = V('0 2 3 5 7 8 10', step = 12, continuous = True)
+octatonic = V('0 1 3 4 6 7 9 10', step = 12, continuous = True)
+wholetone = V('0 2 4 6 8 10', step = 12, continuous = True)

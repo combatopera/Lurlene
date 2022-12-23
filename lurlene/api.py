@@ -30,11 +30,6 @@ def E(cls, *script, initargs = (), **kwargs):
     return concat(Script, EParse(Program(cls, initargs), namespace), script, kwargs)
 
 unit = E(None, '//')
-naturalminor = V('0 2 3 5 7 8 10', step = 12, continuous = True)
-harmonicminor = V('0 2 3 5 7 8 11', step = 12, continuous = True)
-major = V('0 2 4 5 7 9 11', step = 12, continuous = True)
-octatonic = V('0 1 3 4 6 7 9 10', step = 12, continuous = True)
-wholetone = V('0 2 4 6 8 10', step = 12, continuous = True)
 
 def topitch(degree):
     c = local.context
