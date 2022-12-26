@@ -52,7 +52,7 @@ class BiasSection(Section):
         super().settarget(target)
         self.bias = float(np.sign(self.perframe)) / -2
 
-class Sections:
+class Segments:
 
     def __init__(self):
         self.frames = [] # First is always 0, but it's convenient.
@@ -131,9 +131,9 @@ class Operators:
             refs.append((index, s.initial[0]))
         invs = []
         for _ in range(len(degrees)):
-            sections = Sections()
-            sections.init(self.sections, (degrees[index] + np.array([octave, 0, 0]) for index, octave in refs))
-            invs.append(type(self)(sections, self.kwargs))
+            segments = Segments()
+            segments.init(self.sections, (degrees[index] + np.array([octave, 0, 0]) for index, octave in refs))
+            invs.append(type(self)(segments, self.kwargs))
             degrees.append(degrees.pop(0) + np.array([1, 0, 0]))
         return invs
 

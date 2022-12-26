@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .model import Operators, Sections, FlatSection, BiasSection, Section, Concat, EventSection, Repeat, Mul
+from .model import Operators, Segments, FlatSection, BiasSection, Section, Concat, EventSection, Repeat, Mul
 from diapyr.util import innerclass
 import re, numpy as np, inspect, itertools
 
@@ -53,7 +53,7 @@ class Parse:
 
     def parse(self, script, successor):
         session = self.Session()
-        session.sections = Sections()
+        session.sections = Segments()
         for word in re.findall(r'[^\s|]+', script):
             session.parseword(word)
         session.wrap(successor)
