@@ -59,15 +59,15 @@ class Segments:
         self.sections = []
         self.len = 0
 
-    def add(self, section):
+    def add(self, segment):
         self.frames.append(self.len)
-        self.sections.append(section)
-        self.len += section.width # TODO LATER: Error accumulation.
+        self.sections.append(segment)
+        self.len += segment.width # TODO LATER: Error accumulation.
 
-    def init(self, sections, initials):
-        self.frames = sections.frames.copy()
-        self.sections = [type(s)(i, s.excess, s.width) for s, i in zip(sections.sections, initials)]
-        self.len = sections.len
+    def init(self, segments, initials):
+        self.frames = segments.frames.copy()
+        self.sections = [type(s)(i, s.excess, s.width) for s, i in zip(segments.sections, initials)]
+        self.len = segments.len
         n = len(self.sections)
         for i in range(n):
             if i + 1 < n:
