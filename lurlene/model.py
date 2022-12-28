@@ -43,7 +43,7 @@ class Section(BaseSegment):
     def settarget(self, target):
         self.perframe = (target - self.initial) / (self.excess + self.width)
 
-class BiasSection(Section):
+class BiasSegment(Section):
 
     def getvalue(self, frame, xadjust):
         return super().getvalue(frame, xadjust) + self.bias
