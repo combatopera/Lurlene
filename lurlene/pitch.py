@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .util import All
+from .util import All as __all__
 
-__all__ = All(globals())
-for octave in range(10):
-    for letter, offset in zip('CDEFGAB', [0, 2, 4, 5, 7, 9, 11]):
-        __all__.put(f"{letter}{octave}", (1 + octave) * 12 + offset)
+__all__ = __all__(globals())
+__all__.update([f"{letter}{octave}", (1 + octave) * 12 + offset] for octave in range(10) for letter, offset in zip('CDEFGAB', [0, 2, 4, 5, 7, 9, 11]))

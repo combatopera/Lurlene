@@ -16,10 +16,9 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import api, scale
-from .util import All
+from .util import All as __all__
 
-__all__ = All(globals())
-for name in 'D', 'E', 'topitch', 'unit', 'V':
-    __all__.put(name, getattr(api, name))
-for name in 'harmonicminor', 'major', 'naturalminor', 'octatonic', 'wholetone':
-    __all__.put(name, getattr(scale, name))
+__all__ = __all__(globals())
+__all__.update([name, getattr(api, name)] for name in ['D', 'E', 'topitch', 'unit', 'V'])
+__all__.update([name, getattr(scale, name)] for name in ['harmonicminor', 'major', 'naturalminor', 'octatonic', 'wholetone'])
+del api, scale

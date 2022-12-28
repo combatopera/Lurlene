@@ -55,9 +55,10 @@ class All(list):
     def __init__(self, namespace):
         self.namespace = namespace
 
-    def put(self, name, obj):
-        self.namespace[name] = obj
-        self.append(name)
+    def update(self, entries):
+        for name, obj in entries:
+            self.namespace[name] = obj
+            self.append(name)
 
 class Lazy: # XXX: Is this really the most maintainable way?
 
