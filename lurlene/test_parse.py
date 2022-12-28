@@ -109,6 +109,7 @@ class TestEParse(TestCase):
         with self.assertRaises(BadWordException) as cm:
             EParse(None, None).parse('-1x1', None)
         self.assertEqual(('-1x1',), cm.exception.args)
+        # XXX: Allow as a way of commenting out?
         with self.assertRaises(BadWordException) as cm:
             EParse(None, None).parse('3 0x1 2', None)
         self.assertEqual(('0x1',), cm.exception.args)
