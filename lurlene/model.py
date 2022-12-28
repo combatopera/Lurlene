@@ -35,7 +35,7 @@ class FlatSegment(BaseSegment):
     def settarget(self, target):
         pass
 
-class Section(BaseSegment):
+class Segment(BaseSegment):
 
     def unbiased(self, frame):
         return self.initial + (self.excess + frame) * self.perframe
@@ -43,7 +43,7 @@ class Section(BaseSegment):
     def settarget(self, target):
         self.perframe = (target - self.initial) / (self.excess + self.width)
 
-class BiasSegment(Section):
+class BiasSegment(Segment):
 
     def getvalue(self, frame, xadjust):
         return super().getvalue(frame, xadjust) + self.bias

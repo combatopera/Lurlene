@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .model import Operators, Segments, FlatSegment, BiasSegment, Section, Concat, EventSegment, Repeat, Mul
+from .model import Operators, Segments, FlatSegment, BiasSegment, Segment, Concat, EventSegment, Repeat, Mul
 from diapyr.util import innerclass
 import re, numpy as np, inspect, itertools
 
@@ -94,7 +94,7 @@ class VParse(Parse):
             if hold > 0 or (not hold and not slide):
                 self.sections.add(FlatSegment(initial, None, hold))
             if slide:
-                self.sections.add((BiasSegment if bias else Section)(initial, max(0, slide - width), min(width, slide)))
+                self.sections.add((BiasSegment if bias else Segment)(initial, max(0, slide - width), min(width, slide)))
 
         def wrap(self, successor):
             if successor is None:
