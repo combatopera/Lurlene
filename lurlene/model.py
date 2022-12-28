@@ -27,7 +27,7 @@ class BaseSegment:
     def getvalue(self, frame, xadjust):
         return self.unbiased(frame)
 
-class FlatSection(BaseSegment):
+class FlatSegment(BaseSegment):
 
     def unbiased(self, frame):
         return self.initial
