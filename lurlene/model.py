@@ -56,31 +56,31 @@ class Segments:
 
     def __init__(self):
         self.frames = [] # First is always 0, but it's convenient.
-        self.sections = []
+        self.segments = []
         self.len = 0
 
     def add(self, segment):
         self.frames.append(self.len)
-        self.sections.append(segment)
+        self.segments.append(segment)
         self.len += segment.width # TODO LATER: Error accumulation.
 
     def init(self, segments, initials):
         self.frames = segments.frames.copy()
-        self.sections = [type(s)(i, s.excess, s.width) for s, i in zip(segments.sections, initials)]
+        self.segments = [type(s)(i, s.excess, s.width) for s, i in zip(segments.segments, initials)]
         self.len = segments.len
-        n = len(self.sections)
+        n = len(self.segments)
         for i in range(n):
             if i + 1 < n:
-                t = self.sections[i + 1]
+                t = self.segments[i + 1]
             else:
-                t = self.sections[0]
-            self.sections[i].settarget(t.initial)
+                t = self.segments[0]
+            self.segments[i].settarget(t.initial)
 
     def empty(self):
         return not self.frames
 
     def at(self, index):
-        return self.frames[index], self.sections[index]
+        return self.frames[index], self.segments[index]
 
     def forframe(self, absframe, xadjust):
         relframe = absframe % self.len
@@ -121,7 +121,7 @@ class Operators:
         degreetoindex = {}
         degrees = []
         refs = []
-        for s in self.segments.sections:
+        for s in self.segments.segments:
             degree = tuple(s.initial[1:])
             if degree in degreetoindex:
                 index = degreetoindex[degree]

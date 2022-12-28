@@ -23,27 +23,27 @@ class TestVParse(TestCase):
 
     @staticmethod
     def _perframes(segments):
-        return [getattr(s, 'perframe', None) for s in segments.sections]
+        return [getattr(s, 'perframe', None) for s in segments.segments]
 
     def test_works(self):
         segments = VParse(float, 0, False).parse('1/1 2/1 .5/1', None)
         self.assertEqual([0, 1, 2], segments.frames)
         self.assertEqual(3, segments.len)
-        self.assertEqual([1, 2, .5], [s.initial for s in segments.sections])
+        self.assertEqual([1, 2, .5], [s.initial for s in segments.segments])
         self.assertEqual([1, -1.5, .5], self._perframes(segments))
 
     def test_widths(self):
         segments = VParse(float, 0, False).parse('1x/1 2x1/1 .5x2/.5', None) # Default value is 0.
         self.assertEqual([0, 1, 2, 3], segments.frames)
         self.assertEqual(3.5, segments.len)
-        self.assertEqual([0, 1, 1, 2], [s.initial for s in segments.sections])
+        self.assertEqual([0, 1, 1, 2], [s.initial for s in segments.segments])
         self.assertEqual([1, None, 1, -4], self._perframes(segments))
 
     def test_slides(self):
         segments = VParse(float, 0, False).parse('5/.5 4/1 2x3/ 2/1', None) # Width of first word still implicitly 1.
         self.assertEqual([0, .5, 1, 2, 4], segments.frames)
         self.assertEqual(5, segments.len)
-        self.assertEqual([5, 5, 4, 3, 2], [s.initial for s in segments.sections])
+        self.assertEqual([5, 5, 4, 3, 2], [s.initial for s in segments.segments])
         self.assertEqual([None, -2, -1, -.5, 3], self._perframes(segments))
 
     def test_x(self):
@@ -55,35 +55,35 @@ class TestVParse(TestCase):
         segments = VParse(float, 0, False).parse('/ 7', None)
         self.assertEqual([0, 1], segments.frames)
         self.assertEqual(2, segments.len)
-        self.assertEqual([0, 7], [s.initial for s in segments.sections])
+        self.assertEqual([0, 7], [s.initial for s in segments.segments])
         self.assertEqual([7, None], self._perframes(segments))
 
     def test_combo(self):
         segments = VParse(float, 0, False).parse('5x4/10 0/1', None)
         self.assertEqual([0, 5], segments.frames)
         self.assertEqual(6, segments.len)
-        self.assertEqual([4, 0], [s.initial for s in segments.sections])
+        self.assertEqual([4, 0], [s.initial for s in segments.segments])
         self.assertEqual([-.4, 4], self._perframes(segments))
 
     def test_excess(self):
         segments = VParse(float, 0, False).parse('5/ 6/2 7', None)
         self.assertEqual([0, 1, 2], segments.frames)
         self.assertEqual(3, segments.len)
-        self.assertEqual([5, 6, 7], [s.initial for s in segments.sections])
+        self.assertEqual([5, 6, 7], [s.initial for s in segments.segments])
         self.assertEqual([1, .5, None], self._perframes(segments))
 
     def test_excess2(self):
         segments = VParse(float, 0, False).parse('5/2 6/', None)
         self.assertEqual([0, 1], segments.frames)
         self.assertEqual(2, segments.len)
-        self.assertEqual([5, 6], [s.initial for s in segments.sections])
+        self.assertEqual([5, 6], [s.initial for s in segments.segments])
         self.assertEqual([.5, -1], self._perframes(segments))
 
     def test_halfnotes(self):
         segments = VParse(float, 0, False).parse('2.5x4/1 0/1', None) # Implicit slide is still 1.
         self.assertEqual([0, 1.5, 2.5], segments.frames)
         self.assertEqual(3.5, segments.len)
-        self.assertEqual([4, 4, 0], [s.initial for s in segments.sections])
+        self.assertEqual([4, 4, 0], [s.initial for s in segments.segments])
         self.assertEqual([None, -4, 4], self._perframes(segments))
 
 class TestEParse(TestCase):
@@ -92,15 +92,15 @@ class TestEParse(TestCase):
         segments = EParse(None, None).parse('1 2 .5', None)
         self.assertEqual([0, 1, 3], segments.frames)
         self.assertEqual(3.5, segments.len)
-        self.assertEqual([0, 1, 3], [s.relframe for s in segments.sections])
-        self.assertEqual([None, None, None], [s.onframes for s in segments.sections])
+        self.assertEqual([0, 1, 3], [s.relframe for s in segments.segments])
+        self.assertEqual([None, None, None], [s.onframes for s in segments.segments])
 
     def test_repeats(self):
         segments = EParse(None, None).parse('1x 2x3 3x2', None) # Default width is 1.
         self.assertEqual([0, 1, 4, 7, 9, 11], segments.frames)
         self.assertEqual(13, segments.len)
-        self.assertEqual([0, 1, 4, 7, 9, 11], [s.relframe for s in segments.sections])
-        self.assertEqual([None] * 6, [s.onframes for s in segments.sections])
+        self.assertEqual([0, 1, 4, 7, 9, 11], [s.relframe for s in segments.segments])
+        self.assertEqual([None] * 6, [s.onframes for s in segments.segments])
 
     def test_badrepeat(self):
         with self.assertRaises(BadWordException) as cm:
@@ -118,8 +118,8 @@ class TestEParse(TestCase):
         segments = EParse(None, None).parse('/2 /.5 3/2 .5/1', None)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], segments.frames)
         self.assertEqual(7, segments.len)
-        self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in segments.sections])
-        self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in segments.sections])
+        self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in segments.segments])
+        self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in segments.segments])
 
 class TestFlatten(TestCase):
 
