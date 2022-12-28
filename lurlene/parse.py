@@ -125,8 +125,8 @@ def _flatten(scriptforest):
 def concat(scriptcls, parser, scriptforest, kwargs):
     scripts = []
     successor = None
-    for segment in reversed(_flatten(scriptforest).split(',')):
-        successor = scriptcls(parser.parse(segment, successor), kwargs)
+    for act in reversed(_flatten(scriptforest).split(',')):
+        successor = scriptcls(parser.parse(act, successor), kwargs)
         scripts.insert(0, successor)
     return scripts[0] if 1 == len(scripts) else Concat(*scripts)
 
