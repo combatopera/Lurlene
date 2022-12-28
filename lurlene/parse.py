@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .model import Operators, Segments, FlatSegment, BiasSegment, Section, Concat, EventSection, Repeat, Mul
+from .model import Operators, Segments, FlatSegment, BiasSegment, Section, Concat, EventSegment, Repeat, Mul
 from diapyr.util import innerclass
 import re, numpy as np, inspect, itertools
 
@@ -157,9 +157,9 @@ class EParse(Parse):
             onwidth = max(0, width - offwidth)
             for _ in range(count):
                 if onwidth:
-                    self.sections.add(EventSection(self.sections.len, None, onwidth, self.program, self.namespace))
+                    self.sections.add(EventSegment(self.sections.len, None, onwidth, self.program, self.namespace))
                 if offwidth:
-                    self.sections.add(EventSection(self.sections.len, onwidth, offwidth, silence if hardoff else self.program, self.namespace))
+                    self.sections.add(EventSegment(self.sections.len, onwidth, offwidth, silence if hardoff else self.program, self.namespace))
 
         def wrap(self, successor):
             pass

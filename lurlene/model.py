@@ -140,7 +140,7 @@ class Operators:
     def apply(self, speed, frame, chips):
         self.of(speed)[frame].perform(frame, speed, chips, self.kwargs)
 
-class EventSection:
+class EventSegment:
 
     def __init__(self, relframe, onframes, width, program, namespace):
         self.relframe = relframe
