@@ -122,6 +122,13 @@ class TestEParse(TestCase):
         self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in segments.segments])
         self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in segments.segments])
 
+    def test_rests(self):
+        segments = EParse(None, None).parse('2z .5z z', None)
+        self.assertEqual([0, 2, 2.5], segments.frames)
+        self.assertEqual(3.5, segments.len)
+        self.assertEqual([0, 2, 2.5], [s.relframe for s in segments.segments])
+        self.assertEqual([None, None, None], [s.onframes for s in segments.segments])
+
 class TestFlatten(TestCase):
 
     def test_lazy(self):

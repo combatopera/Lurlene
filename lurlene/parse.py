@@ -132,7 +132,7 @@ def concat(scriptcls, parser, scriptforest, kwargs):
 
 class EParse(Parse):
 
-    pattern = re.compile('(?:([0-9]+)x)?(-?[0-9.]+)?(?:/(/)?([0-9.]*))?')
+    pattern = re.compile('(?:([0-9]+)x)?(-?[0-9.]+)?(?:/([0-9.]*))?|([0-9.]*)z')
 
     def __init__(self, program, namespace):
         self.program = program
@@ -145,21 +145,24 @@ class EParse(Parse):
             m = self.pattern.fullmatch(word)
             if m is None:
                 raise BadWordException(word)
+            rest = m.group(4)
+            if rest is not None:
+                self.segments.add(EventSegment(self.segments.len, None, float(rest) if rest else 1, silence, self.namespace))
+                return
             count = m.group(1)
             count = 1 if count is None else int(count)
             if count < 1:
                 raise BadWordException(word)
             width = m.group(2)
             width = 1 if width is None else float(width)
-            hardoff = m.group(3)
-            offwidth = m.group(4)
+            offwidth = m.group(3)
             offwidth = 0 if offwidth is None else (float(offwidth) if offwidth else width) # FIXME: Ignore excess offwidth.
             onwidth = max(0, width - offwidth)
             for _ in range(count):
                 if onwidth:
                     self.segments.add(EventSegment(self.segments.len, None, onwidth, self.program, self.namespace))
                 if offwidth:
-                    self.segments.add(EventSegment(self.segments.len, onwidth, offwidth, silence if hardoff else self.program, self.namespace))
+                    self.segments.add(EventSegment(self.segments.len, onwidth, offwidth, self.program, self.namespace))
 
         def wrap(self, successor):
             pass

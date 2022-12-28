@@ -29,7 +29,7 @@ def E(cls, *script, initargs = (), **kwargs):
     kwargs = {(namespace, name): value for name, value in kwargs.items()}
     return concat(Script, EParse(Program(cls, initargs), namespace), script, kwargs)
 
-unit = E(None, '//')
+unit = E(None, 'z')
 
 def topitch(degree):
     c = local.context
