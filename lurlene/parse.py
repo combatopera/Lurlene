@@ -53,11 +53,11 @@ class Parse:
 
     def parse(self, script, successor):
         session = self.Session()
-        session.sections = Segments()
+        session.segments = Segments()
         for word in re.findall(r'[^\s|]+', script):
             session.parseword(word)
         session.wrap(successor)
-        return session.sections
+        return session.segments
 
 class VParse(Parse):
 
@@ -88,23 +88,23 @@ class VParse(Parse):
             bias = m.group(5)
             slide = m.group(6)
             slide = (width if self.continuous else 0) if slide is None else (float(slide) if slide else width)
-            if not self.sections.empty():
+            if not self.segments.empty():
                 self._wrap(initial)
             hold = width - slide
             if hold > 0 or (not hold and not slide):
-                self.sections.add(FlatSegment(initial, None, hold))
+                self.segments.add(FlatSegment(initial, None, hold))
             if slide:
-                self.sections.add((BiasSegment if bias else Segment)(initial, max(0, slide - width), min(width, slide)))
+                self.segments.add((BiasSegment if bias else Segment)(initial, max(0, slide - width), min(width, slide)))
 
         def wrap(self, successor):
             if successor is None:
-                _, firstsection = self.sections.at(0)
+                _, firstsection = self.segments.at(0)
                 self._wrap(firstsection.initial + self.step)
             else:
                 self._wrap(successor[0]) # TODO: Unit-test what effect step would have.
 
         def _wrap(self, value):
-            _, lastsection = self.sections.at(-1)
+            _, lastsection = self.segments.at(-1)
             lastsection.settarget(value)
 
 def rebase(n, frombase = 1):
@@ -157,9 +157,9 @@ class EParse(Parse):
             onwidth = max(0, width - offwidth)
             for _ in range(count):
                 if onwidth:
-                    self.sections.add(EventSegment(self.sections.len, None, onwidth, self.program, self.namespace))
+                    self.segments.add(EventSegment(self.segments.len, None, onwidth, self.program, self.namespace))
                 if offwidth:
-                    self.sections.add(EventSegment(self.sections.len, onwidth, offwidth, silence if hardoff else self.program, self.namespace))
+                    self.segments.add(EventSegment(self.segments.len, onwidth, offwidth, silence if hardoff else self.program, self.namespace))
 
         def wrap(self, successor):
             pass
