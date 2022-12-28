@@ -121,7 +121,7 @@ class Operators:
         degreetoindex = {}
         degrees = []
         refs = []
-        for s in self.sections.sections:
+        for s in self.segments.sections:
             degree = tuple(s.initial[1:])
             if degree in degreetoindex:
                 index = degreetoindex[degree]
@@ -132,7 +132,7 @@ class Operators:
         invs = []
         for _ in range(len(degrees)):
             segments = Segments()
-            segments.init(self.sections, (degrees[index] + np.array([octave, 0, 0]) for index, octave in refs))
+            segments.init(self.segments, (degrees[index] + np.array([octave, 0, 0]) for index, octave in refs))
             invs.append(type(self)(segments, self.kwargs))
             degrees.append(degrees.pop(0) + np.array([1, 0, 0]))
         return invs
@@ -325,7 +325,7 @@ class Concat(Binary):
         return mulcls
 
     def getitem(self, frame, shift):
-        split = self.p1.sections.len
+        split = self.p1.segments.len
         if frame - shift < split:
             return self.p1.getitem(frame, shift)
         else:

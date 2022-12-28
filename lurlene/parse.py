@@ -23,24 +23,24 @@ class Script(Operators):
 
     mulcls = Repeat
 
-    def __init__(self, sections, kwargs):
-        self.len = max(itertools.chain([sections.len], (s.len for s in kwargs.values())))
-        self.sections = sections
+    def __init__(self, segments, kwargs):
+        self.len = max(itertools.chain([segments.len], (s.len for s in kwargs.values())))
+        self.segments = segments
         self.kwargs = kwargs
 
     def getitem(self, frame, shift):
-        return self.sections.forframe(frame - shift, shift)
+        return self.segments.forframe(frame - shift, shift)
 
 class StepScript(Script):
 
     mulcls = Mul
 
-    def __init__(self, sections, kwargs, step):
-        super().__init__(sections, kwargs)
+    def __init__(self, segments, kwargs, step):
+        super().__init__(segments, kwargs)
         self.step = step
 
     def getitem(self, frame, shift):
-        return Value(super().getitem(frame, shift) + (frame - shift) // self.sections.len * self.step)
+        return Value(super().getitem(frame, shift) + (frame - shift) // self.segments.len * self.step)
 
 class Value(float):
 
