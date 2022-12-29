@@ -95,6 +95,13 @@ class TestEParse(TestCase):
         self.assertEqual([0, 1, 3], [s.relframe for s in segments.segments])
         self.assertEqual([None, None, None], [s.onframes for s in segments.segments])
 
+    def test_works2(self):
+        segments = EParse(None, None).parse('1 2 1/2', None)
+        self.assertEqual([0, 1, 3], segments.frames)
+        self.assertEqual(3.5, segments.len)
+        self.assertEqual([0, 1, 3], [s.relframe for s in segments.segments])
+        self.assertEqual([None, None, None], [s.onframes for s in segments.segments])
+
     def test_repeats(self):
         segments = EParse(None, None).parse('1x 2x3 3x2', None) # Default width is 1.
         self.assertEqual([0, 1, 4, 7, 9, 11], segments.frames)
@@ -122,8 +129,22 @@ class TestEParse(TestCase):
         self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in segments.segments])
         self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in segments.segments])
 
+    def test_noteoff2(self):
+        segments = EParse(None, None).parse('r2 r1/2 3r2 1/2r1', None)
+        self.assertEqual([0, 2, 2.5, 3, 4, 6], segments.frames)
+        self.assertEqual(7, segments.len)
+        self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in segments.segments])
+        self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in segments.segments])
+
     def test_rests(self):
         segments = EParse(None, None).parse('2z .5z z', None)
+        self.assertEqual([0, 2, 2.5], segments.frames)
+        self.assertEqual(3.5, segments.len)
+        self.assertEqual([0, 2, 2.5], [s.relframe for s in segments.segments])
+        self.assertEqual([None, None, None], [s.onframes for s in segments.segments])
+
+    def test_rests2(self):
+        segments = EParse(None, None).parse('2z 1/2z z', None)
         self.assertEqual([0, 2, 2.5], segments.frames)
         self.assertEqual(3.5, segments.len)
         self.assertEqual([0, 2, 2.5], [s.relframe for s in segments.segments])
