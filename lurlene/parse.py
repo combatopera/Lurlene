@@ -136,7 +136,7 @@ def _readnumber(s, default):
     if not s:
         return default
     if '/' in s:
-        return Fraction(s)
+        return Fraction(f"1{s}" if '/' == s[0] else s) # TODO: Also default numerator when negative.
     if '.' in s:
         return Decimal(s)
     return int(s)
