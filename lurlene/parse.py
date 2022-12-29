@@ -16,7 +16,9 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .model import Operators, Segments, FlatSegment, BiasSegment, Segment, Concat, EventSegment, Repeat, Mul
+from decimal import Decimal
 from diapyr.util import innerclass
+from fractions import Fraction
 import re, numpy as np, inspect, itertools
 
 class Script(Operators):
@@ -130,6 +132,15 @@ def concat(scriptcls, parser, scriptforest, kwargs):
         scripts.insert(0, successor)
     return scripts[0] if 1 == len(scripts) else Concat(*scripts)
 
+def _readnumber(s, default):
+    if not s:
+        return default
+    if '/' in s:
+        return Fraction(s)
+    if '.' in s:
+        return Decimal(s)
+    return int(s)
+
 class EParse(Parse):
 
     pattern = re.compile('(?:([0-9]+)x)?(-?[0-9.]+)?(?:/([0-9.]*))?|([0-9.]*)z')
@@ -147,7 +158,7 @@ class EParse(Parse):
                 raise BadWordException(word)
             rest = m.group(4)
             if rest is not None:
-                self.segments.add(EventSegment(self.segments.len, None, float(rest) if rest else 1, silence, self.namespace))
+                self.segments.add(EventSegment(self.segments.len, None, _readnumber(rest, 1), silence, self.namespace))
                 return
             count = m.group(1)
             count = 1 if count is None else int(count)
