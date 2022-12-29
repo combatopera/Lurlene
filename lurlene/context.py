@@ -123,7 +123,7 @@ class Sections:
 
     def __init__(self, speed, sections):
         # FIXME: Recalculate sectionends when a lazy section is resized.
-        self.sectionends = np.cumsum([speed * max(pattern.len for pattern in section) for section in sections])
+        self.sectionends = np.cumsum([float(speed * max(pattern.len for pattern in section)) for section in sections])
         self.sections = sections
 
     @property

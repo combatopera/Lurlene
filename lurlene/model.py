@@ -167,7 +167,7 @@ class Event:
                 if name in extras:
                     yield name, extras[name]
                 elif 'frame' == name:
-                    yield name, Frame(frame - self.absframe * speed + shift)
+                    yield name, Frame(frame - self.absframe * speed + float(shift))
                 else:
                     key = self.namespace, name
                     if key in kwargs:
@@ -177,7 +177,7 @@ class Event:
                 note.on(**dict(noteargs(self.program.onparams, 0, **chips, onframes = None)))
         else:
             if self.program.offparams is not None:
-                onframes = self.onframes * speed
+                onframes = float(self.onframes) * speed
                 note.off(**dict(noteargs(self.program.offparams, onframes, **chips, onframes = onframes)))
             elif self.program.onparams is not None:
                 onframes = self.onframes * speed
@@ -272,7 +272,7 @@ class RShift(Operators):
         self.frames = frames
 
     def getitem(self, frame, shift):
-        return self.p.getitem(frame, self.frames + shift)
+        return self.p.getitem(frame, float(self.frames) + float(shift))
 
 class Repeat(Operators):
 
@@ -340,7 +340,7 @@ class Then(Binary):
 
     @property
     def len(self):
-        return self.len1.len + self.len2.len
+        return float(self.len1.len) + float(self.len2.len)
 
     def __init__(self, p1, p2, len1, len2):
         super().__init__(p1, p2)
@@ -355,12 +355,12 @@ class Then(Binary):
 
     def getitem(self, frame, shift):
         split = self.len1.len
-        total = split + self.len2.len
+        total = float(split) + float(self.len2.len)
         loop = (frame - shift) // float(total)
         if (frame - shift) % float(total) < split:
             return self.p1.getitem(frame, shift + float(self.len2.len) * loop)
         else:
-            return self.p2.getitem(frame, shift + self.len1.len * (1 + loop))
+            return self.p2.getitem(frame, shift + float(self.len1.len) * (1 + loop))
 
 class Slice(Operators):
 
@@ -370,7 +370,7 @@ class Slice(Operators):
 
     def __init__(self, p, slice):
         def readslice(ref, adj):
-            return ref if adj is None else (ref + adj if adj < 0 else adj)
+            return ref if adj is None else (float(ref) + adj if adj < 0 else adj)
         self.start = readslice(0, slice.start)
         self.stop = readslice(p.len, slice.stop)
         # TODO: Use step.
@@ -379,5 +379,5 @@ class Slice(Operators):
         self.p = p
 
     def getitem(self, frame, shift):
-        loop = (frame - shift) // self.len
-        return self.p.getitem(frame, shift - self.start - (self.p.len - self.len) * loop)
+        loop = (frame - shift) // float(self.len)
+        return self.p.getitem(frame, float(shift) - float(self.start) - (float(self.p.len) - float(self.len)) * loop) # TODO: Too many floats.
