@@ -143,7 +143,7 @@ def _readnumber(s, default):
 
 class EParse(Parse):
 
-    pattern = re.compile('(?:([0-9]+)x)?(-?[0-9.]+)?(?:/([0-9.]*))?|([0-9.]*)z')
+    pattern = re.compile('(?:([0-9]+)x)?(-?[0-9.]+)?(?:r([0-9.]*))?|([0-9.]*)z')
 
     def __init__(self, program, namespace):
         self.program = program

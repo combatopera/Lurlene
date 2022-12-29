@@ -30,7 +30,7 @@ class Context:
     deleted = object()
 
     @types(Config)
-    def __init__(self, config, sections = [(E(XTRA, '11/1'),)]):
+    def __init__(self, config, sections = [(E(XTRA, '11r1'),)]):
         self.fastglobals = self.slowglobals = dict(
             {self.lazyname: Lazy},
             tuning = config.tuning,

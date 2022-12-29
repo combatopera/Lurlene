@@ -230,7 +230,7 @@ class TestD(TestCase):
 class TestE(TestCase):
 
     def test_works(self):
-        e = E(None, '4x1 3/1 1')
+        e = E(None, '4x1 3r1 1')
         self.assertEqual(0, e[.9].absframe)
         self.assertEqual(1, e[1.9].absframe)
         self.assertEqual(2, e[2.9].absframe)
@@ -241,7 +241,7 @@ class TestE(TestCase):
         self.assertEqual(7, e[7.9].absframe)
 
     def test_off(self):
-        e = E(None, '/.5 /1.5 1')
+        e = E(None, 'r.5 r1.5 1')
         self.assertEqual(None, e[0].onframes)
         self.assertEqual(.5, e[.5].onframes)
         self.assertEqual(0, e[1].onframes)
@@ -254,8 +254,8 @@ class TestE(TestCase):
         self.assertEqual(1, e[2.4].absframe)
         self.assertEqual(2.5, e[2.5].absframe)
 
-    def test_rests(self):
-        e = E(None, '.5/ 1.5/ /')
+    def test_veryoff(self):
+        e = E(None, '.5r 1.5r r')
         self.assertEqual(0, e[0].onframes)
         self.assertEqual(0, e[.5].onframes)
         self.assertEqual(0, e[2].onframes)

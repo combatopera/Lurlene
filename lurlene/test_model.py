@@ -56,7 +56,7 @@ class TestEvent(TestCase):
                 calls.append(['on', frame])
             def off(self, onframes, frame):
                 calls.append(['off', onframes, frame])
-        e = E(MyNote, '2 2/1 2/ 1 z 2z')
+        e = E(MyNote, '2 2r1 2r 1 z 2z')
         for f in range(20):
             e.apply(1, f + .5, {})
         self.assertEqual([
