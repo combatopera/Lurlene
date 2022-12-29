@@ -83,9 +83,9 @@ class Segments:
         return self.frames[index], self.segments[index]
 
     def forframe(self, absframe, xadjust):
-        relframe = absframe % self.len
+        relframe = absframe % float(self.len)
         sectionframe, section = self.at(bisect.bisect(self.frames, relframe) - 1)
-        return section.getvalue(relframe - sectionframe, absframe - relframe + xadjust)
+        return section.getvalue(relframe - float(sectionframe), absframe - relframe + xadjust)
 
 class Operators:
 
@@ -150,7 +150,7 @@ class EventSegment:
         self.namespace = namespace
 
     def getvalue(self, frame, xadjust):
-        return Event(xadjust + self.relframe, self.onframes, self.program, self.namespace)
+        return Event(xadjust + float(self.relframe), self.onframes, self.program, self.namespace)
 
 class Event:
 
@@ -356,9 +356,9 @@ class Then(Binary):
     def getitem(self, frame, shift):
         split = self.len1.len
         total = split + self.len2.len
-        loop = (frame - shift) // total
-        if (frame - shift) % total < split:
-            return self.p1.getitem(frame, shift + self.len2.len * loop)
+        loop = (frame - shift) // float(total)
+        if (frame - shift) % float(total) < split:
+            return self.p1.getitem(frame, shift + float(self.len2.len) * loop)
         else:
             return self.p2.getitem(frame, shift + self.len1.len * (1 + loop))
 

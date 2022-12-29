@@ -164,11 +164,10 @@ class EParse(Parse):
             count = 1 if count is None else int(count)
             if count < 1:
                 raise BadWordException(word)
-            width = m.group(2)
-            width = 1 if width is None else float(width)
+            width = _readnumber(m.group(2), 1)
             offwidth = m.group(3)
             offwidth = 0 if offwidth is None else (float(offwidth) if offwidth else width) # FIXME: Ignore excess offwidth.
-            onwidth = max(0, width - offwidth)
+            onwidth = max(0, float(width) - float(offwidth))
             for _ in range(count):
                 if onwidth:
                     self.segments.add(EventSegment(self.segments.len, None, onwidth, self.program, self.namespace))
