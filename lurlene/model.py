@@ -150,7 +150,7 @@ class EventSegment:
         self.namespace = namespace
 
     def getvalue(self, frame, xadjust):
-        return Event(xadjust + float(self.relframe), self.onframes, self.program, self.namespace)
+        return Event(xadjust + self.relframe, self.onframes, self.program, self.namespace)
 
 class Event:
 
