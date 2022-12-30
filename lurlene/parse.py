@@ -16,7 +16,6 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .model import Operators, Segments, FlatSegment, BiasSegment, Segment, Concat, EventSegment, Repeat, Mul
-from decimal import Decimal
 from diapyr.util import innerclass
 from fractions import Fraction
 import re, numpy as np, inspect, itertools
@@ -132,14 +131,15 @@ def concat(scriptcls, parser, scriptforest, kwargs):
         scripts.insert(0, successor)
     return scripts[0] if 1 == len(scripts) else Concat(*scripts)
 
-def _readnumber(s, default):
-    if not s:
-        return default
-    if '/' in s:
-        return Fraction(f"1{s}" if '/' == s[0] else s) # TODO: Also default numerator when negative.
-    if '.' in s:
-        return Decimal(s)
-    return int(s)
+def _readnumber(numstr, default):
+    if numstr:
+        if '-' == numstr[0]:
+            sign = -1
+            numstr = numstr[1:]
+        else:
+            sign = 1
+        return sign * Fraction(f"1{numstr}" if '/' == numstr[0] else numstr)
+    return default
 
 class EParse(Parse):
 

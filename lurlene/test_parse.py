@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-from .parse import VParse, EParse, BadWordException, _flatten
+from .parse import VParse, EParse, BadWordException, _flatten, _readnumber
 from .util import Lazy
 from unittest import TestCase
 
@@ -155,3 +155,15 @@ class TestFlatten(TestCase):
     def test_lazy(self):
         g = dict(a = 'x', b = 'yy', c = 'z')
         self.assertEqual('x yy z', _flatten([[[Lazy(g, 'a')], Lazy(g, 'b')], Lazy(g, 'c')]))
+
+class TestReadNumber(TestCase):
+
+    def test_works(self):
+        self.assertEqual(.5, _readnumber('.5', None))
+        self.assertEqual(-.5, _readnumber('-.5', None))
+        self.assertEqual(.5, _readnumber('1/2', None))
+        self.assertEqual(-.5, _readnumber('-1/2', None))
+        self.assertEqual(.5, _readnumber('/2', None))
+        self.assertEqual(-.5, _readnumber('-/2', None))
+        self.assertEqual(100, _readnumber(None, 100))
+        self.assertEqual(100, _readnumber('', 100))
