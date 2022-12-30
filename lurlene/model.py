@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
-import bisect, numpy as np, math
+from math import floor
+import bisect, numpy as np
 
 class BaseSegment:
 
@@ -186,7 +187,7 @@ class Event:
 class Frame(float):
 
     def pick(self, v):
-        return v[math.floor(self)]
+        return v[floor(self)]
 
     def __mod__(self, other):
         return type(self)(super().__mod__(other))
