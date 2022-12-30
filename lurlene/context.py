@@ -20,7 +20,7 @@ from .transform import Interpreter
 from .util import Config, Lazy
 from .xtra import XTRA
 from diapyr import types
-import bisect, logging, numpy as np, threading
+import bisect, logging, threading
 
 log = logging.getLogger(__name__)
 
@@ -122,8 +122,13 @@ class Context:
 class Sections:
 
     def __init__(self, speed, sections):
+        def sectionends():
+            end = 0
+            for section in sections:
+                end += speed * max(pattern.len for pattern in section)
+                yield end
         # FIXME: Recalculate sectionends when a lazy section is resized.
-        self.sectionends = np.cumsum([float(speed * max(pattern.len for pattern in section)) for section in sections])
+        self.sectionends = list(sectionends())
         self.sections = sections
 
     @property
