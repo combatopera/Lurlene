@@ -241,7 +241,7 @@ class TestE(TestCase):
         self.assertEqual(7, e[7.9].absframe)
 
     def test_off(self):
-        e = E(None, 'r.5 r1.5 1')
+        e = E(None, 'r.5 3/2r1.5 1')
         self.assertEqual(None, e[0].onframes)
         self.assertEqual(.5, e[.5].onframes)
         self.assertEqual(0, e[1].onframes)

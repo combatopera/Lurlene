@@ -122,15 +122,15 @@ class TestEParse(TestCase):
         self.assertEqual(('0x1',), cm.exception.args)
 
     def test_noteoff(self):
-        # In 'r.5' default width is 1, in '.5r1' width is biggest explicit number:
-        segments = EParse(None, None).parse('r2 r.5 3r2 .5r1', None)
+        # In 'r.5' default width is 1, in '2r3' and 'r1.5' release is clamped to width:
+        segments = EParse(None, None).parse('2r3 r.5 3r2 r1.5', None)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], segments.frames)
         self.assertEqual(7, segments.len)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in segments.segments])
         self.assertEqual([0, None, .5, None, 1, 0], [s.onframes for s in segments.segments])
 
     def test_noteoff2(self):
-        segments = EParse(None, None).parse('r2 r1/2 3r2 1/2r1', None)
+        segments = EParse(None, None).parse('2r3 r1/2 3r2 r3/2', None)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], segments.frames)
         self.assertEqual(7, segments.len)
         self.assertEqual([0, 2, 2.5, 3, 4, 6], [s.relframe for s in segments.segments])
