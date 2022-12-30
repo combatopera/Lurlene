@@ -62,7 +62,7 @@ class Segments:
     def add(self, segment):
         self.frames.append(self.len)
         self.segments.append(segment)
-        self.len += float(segment.width) # TODO LATER: Error accumulation.
+        self.len += segment.width
 
     def init(self, segments, initials):
         self.frames = segments.frames.copy()
