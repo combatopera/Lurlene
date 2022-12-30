@@ -83,7 +83,7 @@ class Segments:
         return self.frames[index], self.segments[index]
 
     def forframe(self, absframe, xadjust):
-        relframe = absframe % float(self.len)
+        relframe = absframe % self.len
         sectionframe, section = self.at(bisect.bisect(self.frames, relframe) - 1)
         return section.getvalue(relframe - float(sectionframe), absframe - relframe + xadjust)
 
