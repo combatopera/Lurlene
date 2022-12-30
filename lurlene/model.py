@@ -167,7 +167,7 @@ class Event:
                 if name in extras:
                     yield name, extras[name]
                 elif 'frame' == name:
-                    yield name, Frame(frame - self.absframe * speed + float(shift))
+                    yield name, Frame(frame - self.absframe * speed + shift)
                 else:
                     key = self.namespace, name
                     if key in kwargs:
