@@ -167,7 +167,7 @@ class EParse(Parse):
             width = _readnumber(m.group(2), 1)
             offwidth = m.group(3)
             offwidth = 0 if offwidth is None else _readnumber(offwidth, width) # FIXME: Ignore excess offwidth.
-            onwidth = max(0, Fraction(width) - Fraction(offwidth))
+            onwidth = max(0, width - offwidth)
             for _ in range(count):
                 if onwidth:
                     self.segments.add(EventSegment(self.segments.len, None, onwidth, self.program, self.namespace))
