@@ -16,12 +16,15 @@
 : along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 author = Andrzej Cichocki
+buildbot enabled = true
+github account = combatopera
 name = Lurlene
+pypi account = combatopera
+pyversions += 3
 requires +=
     diapyr>=18
     numpy>=1.19.1
     splut>=4
     timelyOSC>=4
+tagline = Python-based live-coding language optimised for a small number of channels
 years += 2019
-pyversions += 3
-buildbot enabled = true
