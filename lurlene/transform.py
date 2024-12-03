@@ -53,7 +53,7 @@ class Interpreter:
     def interpret(self, text):
         transform = self.Transform()
         for statement in ast.parse(text).body:
-            self.justexec(ast.fix_missing_locations(ast.Module([transform.visit(statement)]))) # XXX: Are locations accurate?
+            self.justexec(ast.fix_missing_locations(ast.Module([transform.visit(statement)], []))) # XXX: Are locations accurate?
         transform.report()
 
     def justexec(self, textorast):
