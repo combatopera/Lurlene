@@ -18,3 +18,22 @@ venvname/bin/pip install -U pip
 venvname/bin/pip install Lurlene
 . venvname/bin/activate
 ```
+
+## API
+
+<a id="lurlene"></a>
+
+### lurlene
+
+<a id="lurlene.api"></a>
+
+### lurlene.api
+
+<a id="lurlene.pitch"></a>
+
+### lurlene.pitch
+
+<a id="lurlene.scale"></a>
+
+### lurlene.scale
+

@@ -18,8 +18,16 @@
 author = Andrzej Cichocki
 buildbot enabled = true
 github account = combatopera
+internal_module +=
+    lurlene.bridge
+    lurlene.context
+    lurlene.model
+    lurlene.osc
+    lurlene.parse
+    lurlene.transform
+    lurlene.util
+    lurlene.xtra
 name = Lurlene
-pydoc_enabled = false
 pypi account = combatopera
 pyversions += 3
 requires +=
