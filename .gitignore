@@ -4,6 +4,5 @@
 Lurlene.egg-info/*
 !Lurlene.egg-info/PKG-INFO
 !Lurlene.egg-info/requires.txt
-/setup.cfg
 /setup.py
 /pyproject.toml

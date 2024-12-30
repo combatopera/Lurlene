@@ -30,7 +30,6 @@ internal_module +=
     lurlene.xtra
 name = Lurlene
 pypi account = combatopera
-pyversions += 3
 requires +=
     diapyr>=18
     numpy>=$(numpy_build_version)
