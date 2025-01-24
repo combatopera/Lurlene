@@ -15,14 +15,14 @@ venvname/bin/pip install Lurlene
 
 ### To use, permanently
 ```
-pip3 install --user Lurlene
+pip3 install --break-system-packages --user Lurlene
 ```
 See `~/.local/bin` for executables.
 
 ### To develop
 First install venvpool to get the `motivate` command:
 ```
-pip3 install --user venvpool
+pip3 install --break-system-packages --user venvpool
 ```
 Get codebase and install executables:
 ```
