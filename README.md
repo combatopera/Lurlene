@@ -1,5 +1,5 @@
 # Lurlene
-Python-based live-coding language optimised for a small number of channels
+Python-based live-coding language optimised for a small number of channels.
 
 ## Install
 These are generic installation instructions.

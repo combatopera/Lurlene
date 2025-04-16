@@ -13,7 +13,7 @@ Requires-Dist: splut>=4
 Requires-Dist: timelyOSC>=4
 
 # Lurlene
-Python-based live-coding language optimised for a small number of channels
+Python-based live-coding language optimised for a small number of channels.
 
 ## Install
 These are generic installation instructions.
