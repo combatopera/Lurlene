@@ -32,6 +32,7 @@ name = Lurlene
 pypi account = combatopera
 requires +=
     diapyr>=18
+    foyndation>=10
     numpy>=$(numpy_build_version)
     splut>=4
     timelyOSC>=4

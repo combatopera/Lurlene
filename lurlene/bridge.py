@@ -18,7 +18,8 @@
 from .context import Sections, Context
 from .util import catch, Config, threadlocals
 from diapyr import types
-from diapyr.util import innerclass, singleton
+from diapyr.util import innerclass
+from foyndation import singleton
 from functools import partial
 from itertools import zip_longest
 import logging, bisect, difflib
