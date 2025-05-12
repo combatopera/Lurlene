@@ -16,7 +16,7 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from collections import defaultdict
-from diapyr.util import innerclass
+from foyndation import innerclass
 import ast, logging
 
 log = logging.getLogger(__name__)

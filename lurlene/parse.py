@@ -16,7 +16,7 @@
 # along with Lurlene.  If not, see <http://www.gnu.org/licenses/>.
 
 from .model import Operators, Segments, FlatSegment, BiasSegment, Segment, Concat, EventSegment, Repeat, Mul
-from diapyr.util import innerclass
+from foyndation import innerclass
 from fractions import Fraction
 import re, numpy as np, inspect, itertools
 

@@ -8,7 +8,7 @@ Author-email: 3613868+combatopera@users.noreply.github.com
 Description-Content-Type: text/markdown
 License-File: COPYING
 Requires-Dist: diapyr>=18
-Requires-Dist: foyndation>=10
+Requires-Dist: foyndation>=12
 Requires-Dist: numpy>=2.0.2
 Requires-Dist: splut>=4
 Requires-Dist: timelyOSC>=4
