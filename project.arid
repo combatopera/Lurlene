@@ -33,7 +33,7 @@ pypi account = combatopera
 requires +=
     diapyr>=18
     foyndation>=12
-    numpy>=$(numpy_build_version)
+    $(numpy lower_bound)
     splut>=4
     timelyOSC>=4
 tagline = Python-based live-coding language optimised for a small number of channels

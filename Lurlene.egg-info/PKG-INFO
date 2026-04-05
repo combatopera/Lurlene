@@ -9,7 +9,7 @@ Description-Content-Type: text/markdown
 License-File: COPYING
 Requires-Dist: diapyr>=18
 Requires-Dist: foyndation>=12
-Requires-Dist: numpy>=2.0.2
+Requires-Dist: numpy>=2.2.6
 Requires-Dist: splut>=4
 Requires-Dist: timelyOSC>=4
 Dynamic: author
